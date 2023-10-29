@@ -22,4 +22,7 @@ public class MobBase : MonoBehaviour
         }
         transform.localScale = change_scale;
     }
+    protected bool GetDirect(){ // 取得朝向，true時向右
+        return transform.localScale.x < 0;
+    }
 }

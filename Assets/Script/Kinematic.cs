@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Kinematic : MonoBehaviour
 {
     public Vector2 velocity;
-    private Collider2D g_self_collider;
+    public Vector2 knockback;
+    public float knockback_resistance = 0;
     public RaycastHit2D[] g_collision_result;
+    private Collider2D g_self_collider;
     private Rigidbody2D g_self_rigidbody;
     void Start(){
         g_self_collider = GetComponent<Collider2D>();
@@ -23,11 +26,12 @@ public class Kinematic : MonoBehaviour
             velocity = Vector2.zero;
             Debug.Log("LEFT");
         }
-        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + velocity.x*Time.fixedDeltaTime, g_self_rigidbody.position.y);
+        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y)*Time.fixedDeltaTime);
+        knockback += new Vector2(knockback.x>0?-1:1, knockback.y>0?-1:1)*(100-knockback_resistance)*new Vector2(Mathf.Abs(knockback.x), Mathf.Abs(knockback.y))*Time.fixedDeltaTime;
     }
     
     public bool CheckCollisionIn(Vector2 direction, float distance){
-        g_collision_result = new RaycastHit2D[2];
+        g_collision_result = new RaycastHit2D[5];
         return g_self_collider.Cast(direction, g_collision_result, distance) > 0;
     }
 }

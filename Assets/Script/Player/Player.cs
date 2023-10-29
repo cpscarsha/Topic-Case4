@@ -37,12 +37,20 @@ public class Player : MonoBehaviour
                 g_self_kinematic.velocity = new Vector2(2, 0);
             }
         }
+        if(a_is_sweeping){
+            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.1f)){
+                foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
+                    if(i.collider.tag == "Mob"){
+                        i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*1, 0);
+                    }
+                }
+            }
+        }
         ExcuteAnimator();
     }
     
-
     
-    private void SetDirect(bool is_right){ // 設定怪物朝向，當 is_right 時朝右，否則朝左
+    private void SetDirect(bool is_right){ // 設定朝向，當 is_right 時朝右，否則朝左
         Vector3 change_scale = transform.localScale;
         if(is_right && change_scale.x < 0){
             change_scale.x = -change_scale.x;
@@ -51,6 +59,9 @@ public class Player : MonoBehaviour
             change_scale.x = -change_scale.x;
         }
         transform.localScale = change_scale;
+    }
+    private bool GetDirect(){ // 取得朝向，true時向右
+        return transform.localScale.x > 0;
     }
     private void ExcuteAnimator(){ // 處理動畫造成的變數變化
         if(a_attack_end){
