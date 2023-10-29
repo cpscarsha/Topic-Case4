@@ -14,11 +14,11 @@ public class Slime : MobBase
     // Update is called once per frame
     void Update()
     {
-        g_rigidbody.velocity = new Vector2(0, 0);
+        g_self_kinematic.velocity = new Vector2(0, 0);
         bool is_right = g_player.transform.position.x > transform.position.x;
         SetDirect(is_right);
         if(a_is_jump){
-            g_rigidbody.velocity = new Vector2((is_right?1:-1)*0f, 0);
+            g_self_kinematic.velocity = new Vector2((is_right?1:-1)*0.6f, 0);
         }
     }
 

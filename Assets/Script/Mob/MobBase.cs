@@ -6,10 +6,11 @@ public class MobBase : MonoBehaviour
 {
     protected Player g_player;
     protected Rigidbody2D g_rigidbody;
-
+    protected Kinematic g_self_kinematic;
     protected void VariableInit(){
         g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         g_rigidbody = GetComponent<Rigidbody2D>();
+        g_self_kinematic = GetComponent<Kinematic>();
     }
     protected void SetDirect(bool is_right){ // 設定怪物朝向，當 is_right 時朝右，否則朝左
         Vector3 change_scale = transform.localScale;
