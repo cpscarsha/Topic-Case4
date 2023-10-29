@@ -446,6 +446,7 @@ MonoBehaviour:
   - {fileID: 1555406178}
   g_map_scale: 1
   g_map_width: 3.2
+  g_camera: {fileID: 519420028}
 --- !u!114 &615922566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -493,7 +494,7 @@ MonoBehaviour:
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.5
+  m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 00000000910dcf9d439a9757e13bc049c334418a
@@ -726,6 +727,7 @@ MonoBehaviour:
   - {fileID: 1193562024}
   g_map_scale: 1
   g_map_width: 3.2
+  g_camera: {fileID: 519420028}
 --- !u!114 &956947687
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1587,7 +1589,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1936114412}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1605,7 +1607,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 2
+  m_Constraints: 6
 --- !u!1 &2091264138
 GameObject:
   m_ObjectHideFlags: 0
@@ -1767,7 +1769,7 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1936114416}
+  - {fileID: 1360881573}
   - {fileID: 913844817}
   - {fileID: 2131725189}
   - {fileID: 1617813829}
-  - {fileID: 1360881573}
