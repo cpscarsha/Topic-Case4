@@ -1,0 +1,11 @@
+全域變數:
+    動畫用變數: 
+        a_name_name
+    其他變數:   
+        g_name_name
+區域變數:
+    name_name
+常數及列舉內容:
+    NAME
+函數及物件名稱:
+    NameName
