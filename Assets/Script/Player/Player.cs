@@ -11,14 +11,16 @@ public class Player : MonoBehaviour
     };
     public bool a_attack_end = false;
     public bool a_is_sweeping = false;
+    public RaycastHit2D[] g_collision_result;
     private Animator g_self_animator;
     private Rigidbody2D g_self_rigidbody;
-    private bool g_is_motion = false;
+    private Collider2D g_self_collider;
     // Start is called before the first frame update
     void Start()
     {
         g_self_animator = GetComponent<Animator>();
         g_self_rigidbody = GetComponent<Rigidbody2D>();
+        g_self_collider = GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -27,25 +29,48 @@ public class Player : MonoBehaviour
         PlayerInput now_input = GetInput();
         if(now_input == PlayerInput.LEFT || now_input == PlayerInput.RIGHT){
             g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
-            Vector3 change_scale = transform.localScale;
+            SetDirect(now_input == PlayerInput.RIGHT);
             if(now_input == PlayerInput.LEFT){
-                change_scale.x = -Mathf.Abs(change_scale.x);
                 g_self_rigidbody.velocity = new Vector2(-2, 0);
             }
             else{
-                change_scale.x = Mathf.Abs(change_scale.x);
                 g_self_rigidbody.velocity = new Vector2(2, 0);
             }
-            transform.localScale = change_scale;
         }
 
         ExcuteAnimator();
     }
+    void FixedUpdate(){
+        FixCollision();
+    }
 
+    private void FixCollision(){
+        float now_speed = g_self_rigidbody.velocity.x;
+        if(CheckCollisionIn(Vector2.right, now_speed*Time.fixedDeltaTime+0.005f) && now_speed > 0){
+            g_self_rigidbody.velocity = Vector2.zero;
+        }
+        else if(CheckCollisionIn(Vector2.left, -now_speed*Time.fixedDeltaTime+0.005f) && now_speed < 0){
+            g_self_rigidbody.velocity = Vector2.zero;
+        }
+    }
+    private bool CheckCollisionIn(Vector2 direction, float distance){
+        g_collision_result = new RaycastHit2D[2];
+        return g_self_collider.Cast(direction, g_collision_result, distance) > 0;
+    }
+    private void SetDirect(bool is_right){ // 設定怪物朝向，當 is_right 時朝右，否則朝左
+        Vector3 change_scale = transform.localScale;
+        if(is_right && change_scale.x < 0){
+            change_scale.x = -change_scale.x;
+        }
+        else if(!is_right && change_scale.x > 0){
+            change_scale.x = -change_scale.x;
+        }
+        transform.localScale = change_scale;
+    }
     private void ExcuteAnimator(){ // 處理動畫造成的變數變化
         if(a_attack_end){
             g_self_animator.SetBool("isAttack", false); // 關閉攻擊動畫
-            g_self_rigidbody.velocity = new Vector2(0, 0);
+            g_self_rigidbody.velocity = Vector2.zero;
             a_attack_end = false;
         }
     }
