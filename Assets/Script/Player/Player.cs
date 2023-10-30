@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -12,6 +13,8 @@ public class Player : MonoBehaviour
     };
     public bool a_attack_end = false;
     public bool a_is_sweeping = false;
+    public float g_health;
+    // private Light2D g_self_light;
     private Animator g_self_animator;
     private Rigidbody2D g_self_rigidbody;
     
@@ -22,6 +25,8 @@ public class Player : MonoBehaviour
         g_self_animator = GetComponent<Animator>();
         g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
+        g_health = 100;
+        // g_self_light = GetComponent<Light2D>();
     }
 
     // Update is called once per frame
@@ -39,7 +44,7 @@ public class Player : MonoBehaviour
             }
         }
         if(a_is_sweeping){
-            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.1f)){
+            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.3f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
                         if(i.collider.tag == "Mob"){
@@ -50,6 +55,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        ExcuteLight();
         ExcuteAnimator();
     }
     
@@ -73,6 +79,9 @@ public class Player : MonoBehaviour
             g_self_kinematic.velocity = Vector2.zero;
             a_attack_end = false;
         }
+    }
+    private void ExcuteLight(){
+        GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2.8f*g_health*0.01f+1.2f;
     }
     private PlayerInput GetInput(){
         if(Input.touches.Length > 0){
