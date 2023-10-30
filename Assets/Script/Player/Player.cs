@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -40,9 +41,12 @@ public class Player : MonoBehaviour
         if(a_is_sweeping){
             if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.1f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
-                    if(i.collider.tag == "Mob"){
+                    try{
+                        if(i.collider.tag == "Mob"){
                         i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*1, 0);
+                        }
                     }
+                    catch{}
                 }
             }
         }
