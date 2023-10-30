@@ -27,7 +27,10 @@ public class Kinematic : MonoBehaviour
             Debug.Log("LEFT");
         }
         g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y)*Time.fixedDeltaTime);
-        knockback += new Vector2(knockback.x>0?-1:1, knockback.y>0?-1:1)*(100-knockback_resistance)*new Vector2(Mathf.Abs(knockback.x), Mathf.Abs(knockback.y))*Time.fixedDeltaTime;
+        if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
+        else knockback.x = 0;
+        if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
+        else knockback.y = 0;
     }
     
     public bool CheckCollisionIn(Vector2 direction, float distance){

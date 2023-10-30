@@ -43,7 +43,7 @@ public class Player : MonoBehaviour
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
                         if(i.collider.tag == "Mob"){
-                        i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*1, 0);
+                        i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*10, 0);
                         }
                     }
                     catch{}
