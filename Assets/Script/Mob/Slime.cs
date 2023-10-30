@@ -23,7 +23,7 @@ public class Slime : MobBase
             g_self_kinematic.velocity = new Vector2((is_right?1:-1)*0.6f, 0);
         }
 
-        if(g_self_attack_cooldown < Time.time && g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.1f)){
+        if(g_self_attack_cooldown < Time.time && g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.05f)){
             foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                 try{
                     if(i.collider.tag == "Player"){

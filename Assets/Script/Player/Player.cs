@@ -44,11 +44,11 @@ public class Player : MonoBehaviour
             }
         }
         if(a_is_sweeping){
-            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.3f)){
+            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
                         if(i.collider.tag == "Mob"){
-                        i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*10, 0);
+                            i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*10, 0);
                         }
                     }
                     catch{}
@@ -81,7 +81,7 @@ public class Player : MonoBehaviour
         }
     }
     private void ExcuteLight(){
-        GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2.8f*g_health*0.01f+1.2f;
+        GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2*g_health*0.01f;
     }
     private PlayerInput GetInput(){
         if(Input.touches.Length > 0){

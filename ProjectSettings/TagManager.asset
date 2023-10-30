@@ -48,8 +48,14 @@ TagManager:
   - name: Mob
     uniqueID: 2319529155
     locked: 0
+  - name: PlayerBack
+    uniqueID: 1075506531
+    locked: 0
   - name: Player
     uniqueID: 1237335009
+    locked: 0
+  - name: PlayerFore
+    uniqueID: 1217632035
     locked: 0
   - name: Foreground
     uniqueID: 1469553219

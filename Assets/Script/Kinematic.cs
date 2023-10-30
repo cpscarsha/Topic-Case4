@@ -18,13 +18,11 @@ public class Kinematic : MonoBehaviour
 
     void FixedUpdate(){
         float now_speed = velocity.x;
-        if(CheckCollisionIn(Vector2.right, now_speed*Time.fixedDeltaTime+0.05f) && now_speed > 0){
+        if(CheckCollisionIn(Vector2.right, now_speed*Time.fixedDeltaTime+0.005f) && now_speed > 0){
             velocity = Vector2.zero;
-            Debug.Log("RIGHT");
         }
-        else if(CheckCollisionIn(Vector2.left, -now_speed*Time.fixedDeltaTime+0.05f) && now_speed < 0){
+        else if(CheckCollisionIn(Vector2.left, -now_speed*Time.fixedDeltaTime+0.005f) && now_speed < 0){
             velocity = Vector2.zero;
-            Debug.Log("LEFT");
         }
         g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y)*Time.fixedDeltaTime);
         if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
