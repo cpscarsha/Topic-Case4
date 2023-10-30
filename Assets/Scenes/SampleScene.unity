@@ -1122,7 +1122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   knockback: {x: 0, y: 0}
-  knockback_resistance: 50
+  knockback_resistance: 75
 --- !u!1 &1403986926
 GameObject:
   m_ObjectHideFlags: 0
