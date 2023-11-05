@@ -14,17 +14,21 @@ public class Player : MonoBehaviour
     public bool a_attack_end = false;
     public bool a_is_sweeping = false;
     public float g_health;
+    public float g_max_health;
     // private Light2D g_self_light;
     private Animator g_self_animator;
     private Rigidbody2D g_self_rigidbody;
     
     private Kinematic g_self_kinematic;
+    public float g_attack_cooldown = 0.2f;
+    private float g_attack_cooldown_remaining = 0;
     // Start is called before the first frame update
     void Start()
     {
         g_self_animator = GetComponent<Animator>();
         g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
+        g_max_health = 100;
         g_health = 100;
         // g_self_light = GetComponent<Light2D>();
     }
@@ -43,12 +47,13 @@ public class Player : MonoBehaviour
                 g_self_kinematic.velocity = new Vector2(2, 0);
             }
         }
-        if(a_is_sweeping){
+        if(a_is_sweeping && IsCooldownFinish()){
             if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
                         if(i.collider.tag == "Mob"){
-                            i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*10, 0);
+                            i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, 0.1f);
+                            StartCooldown();
                         }
                     }
                     catch{}
@@ -81,7 +86,9 @@ public class Player : MonoBehaviour
         }
     }
     private void ExcuteLight(){
-        GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2*g_health*0.01f;
+        float display_light = g_health/g_max_health;
+        if(display_light < 0)display_light = 0;
+        GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2*display_light;
     }
     private PlayerInput GetInput(){
         if(Input.touches.Length > 0){
@@ -97,6 +104,12 @@ public class Player : MonoBehaviour
             }
         }
         return PlayerInput.NOTHING;
+    }
+    private void StartCooldown(){
+        g_attack_cooldown_remaining = Time.time + g_attack_cooldown;
+    }
+    private bool IsCooldownFinish(){
+        return g_attack_cooldown_remaining < Time.time;
     }
     
 }

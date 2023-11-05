@@ -6,7 +6,7 @@ public class Slime : MobBase
 {
     public bool a_is_jump;
     public float g_attack_cooldown = 0.2f;
-    private float g_self_attack_cooldown = 0;
+    private float g_attack_cooldown_remaining = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,18 +23,18 @@ public class Slime : MobBase
             g_self_kinematic.velocity = new Vector2((is_right?1:-1)*0.6f, 0);
         }
 
-        if(g_self_attack_cooldown < Time.time && g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.05f)){
-            foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
-                try{
-                    if(i.collider.tag == "Player"){
-                        i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*6, 0);
-                        i.collider.GetComponent<Player>().g_health -= 10.0f;
-                        g_self_attack_cooldown = Time.time + g_attack_cooldown;
-                    }
-                }
-                catch{}
+        if(IsCooldownFinish()){
+            if(AttackPlayer(0.05f, 6, 10)){
+                StartCooldown();
             }
         }
+    }
+
+    private void StartCooldown(){
+        g_attack_cooldown_remaining = Time.time + g_attack_cooldown;
+    }
+    private bool IsCooldownFinish(){
+        return g_attack_cooldown_remaining < Time.time;
     }
 
 }
