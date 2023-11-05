@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class Kinematic : MonoBehaviour
@@ -8,6 +9,7 @@ public class Kinematic : MonoBehaviour
     public Vector2 velocity;
     public Vector2 knockback;
     public float knockback_resistance = 0;
+    public string[] avoid_collision_tags;
     public RaycastHit2D[] g_collision_result;
     private Collider2D g_self_collider;
     private Rigidbody2D g_self_rigidbody;
@@ -33,6 +35,17 @@ public class Kinematic : MonoBehaviour
     
     public bool CheckCollisionIn(Vector2 direction, float distance){
         g_collision_result = new RaycastHit2D[5];
-        return g_self_collider.Cast(direction, g_collision_result, distance) > 0;
+        int collision_num = g_self_collider.Cast(direction, g_collision_result, distance);
+        RaycastHit2D[] temp = g_collision_result;
+        foreach(string tag in avoid_collision_tags){
+            for(int i=0;i<temp.Length;i++){
+                if(!temp[i])break;
+                if(temp[i].collider.tag.Equals(tag)){
+                    collision_num -= 1;
+                    temp[i] = new RaycastHit2D();
+                }
+            }
+        }
+        return collision_num != 0;
     }
 }
