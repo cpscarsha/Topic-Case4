@@ -41,6 +41,9 @@ public class MobBase : MonoBehaviour
                     if(i.collider.tag == "Player"){
                         i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*knockback, 0);
                         i.collider.GetComponent<Player>().g_health -= damage;
+                        if(i.collider.GetComponent<Player>().g_health <= 0.001f){
+                            i.collider.GetComponent<Player>().Death();
+                        }
                         result = true;
                     }
                 }
@@ -51,7 +54,7 @@ public class MobBase : MonoBehaviour
     }
     public void BeHit(bool attacker_is_right, float knockback, float damage){
         g_health -= damage;
-        if(g_health <= 0){
+        if(g_health <= 0.001f){
             Death();
         }
         g_self_kinematic.knockback = new Vector2((attacker_is_right?1:-1)*knockback, 0);
@@ -59,6 +62,7 @@ public class MobBase : MonoBehaviour
     public void Death(){
         g_death_particle.Play();
         GetComponent<SpriteRenderer>().enabled = false;
+        Destroy(g_self_kinematic);
         g_death = true;
         Destroy(gameObject, 1f); 
     }

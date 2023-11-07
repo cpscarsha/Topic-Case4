@@ -8,6 +8,7 @@ public class Kinematic : MonoBehaviour
 {
     public Vector2 velocity;
     public Vector2 knockback;
+    public float gravity = 1f;
     public float knockback_resistance = 0;
     public string[] avoid_collision_tags;
     public RaycastHit2D[] g_collision_result;
@@ -33,6 +34,12 @@ public class Kinematic : MonoBehaviour
             if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
             else knockback.y = 0;
         }
+        if(!CheckCollisionIn(Vector2.down, gravity*Time.fixedDeltaTime+0.005f)){
+            g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x, g_self_rigidbody.position.y-gravity*Time.fixedDeltaTime);
+        }
+        if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
+            Destroy(GetComponent<MobBase>().gameObject);
+        }
     }
     
     public bool CheckCollisionIn(Vector2 direction, float distance){
@@ -48,6 +55,6 @@ public class Kinematic : MonoBehaviour
                 }
             }
         }
-        return collision_num != 0;
+        return collision_num > 0;
     }
 }

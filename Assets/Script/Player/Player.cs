@@ -13,13 +13,15 @@ public class Player : MonoBehaviour
     };
     public bool a_attack_end = false;
     public bool a_walk_end = false;
+    public bool a_dodge_end = false;
     public bool a_is_sweeping = false;
     public float g_health;
     public float g_max_health;
     // private Light2D g_self_light;
     private Animator g_self_animator;
     private Rigidbody2D g_self_rigidbody;
-    
+    private ParticleSystem g_death_particle;
+    private bool g_death = false;
     private Kinematic g_self_kinematic;
     public float g_attack_cooldown = 0.2f;
     private float g_attack_cooldown_remaining = 0;
@@ -31,6 +33,7 @@ public class Player : MonoBehaviour
         g_self_kinematic = GetComponent<Kinematic>();
         g_max_health = 100;
         g_health = 100;
+        g_death_particle = GetComponent<ParticleSystem>();
         // g_self_light = GetComponent<Light2D>();
     }
 
@@ -40,36 +43,54 @@ public class Player : MonoBehaviour
         PlayerInput now_input = GetBeginInput();
         // if(a_attack_end && a_walk_end && now_input == PlayerInput.LEFT || now_input == PlayerInput.RIGHT)
         if(now_input == PlayerInput.LEFT || now_input == PlayerInput.RIGHT){
-            SetDirect(now_input == PlayerInput.RIGHT);
+            
             if(now_input == PlayerInput.LEFT){
-                if(g_self_kinematic.CheckCollisionIn(Vector2.left, 3)){
+                if(g_self_kinematic.CheckCollisionIn(Vector2.left, 2)){
                     g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
                     g_self_animator.SetBool("isWalk", false);
                     g_self_kinematic.velocity = new Vector2(-2, 0);
+                    SetDirect(false);
+                }
+                else if(g_self_kinematic.CheckCollisionIn(Vector2.right, 1)){
+                    g_self_animator.SetBool("isDodge", true);
+                    g_self_animator.SetBool("isWalk", false);
+                    g_self_animator.SetBool("isAttack", false);
+                    g_self_kinematic.velocity = new Vector2(-2, 0);
+                    SetDirect(true);
                 }
                 else{
                     g_self_animator.SetBool("isWalk", true);
-                    g_self_kinematic.velocity = new Vector2(-2f, 0);
+                    g_self_kinematic.velocity = new Vector2(-1.8f, 0);
+                    SetDirect(false);
                 }
             }
             else{
-                if(g_self_kinematic.CheckCollisionIn(Vector2.right, 3)){
+                if(g_self_kinematic.CheckCollisionIn(Vector2.right, 2)){
                     g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
                     g_self_animator.SetBool("isWalk", false);
                     g_self_kinematic.velocity = new Vector2(2, 0);
+                    SetDirect(true);
+                }
+                else if(g_self_kinematic.CheckCollisionIn(Vector2.left, 1)){
+                    g_self_animator.SetBool("isDodge", true);
+                    g_self_animator.SetBool("isWalk", false);
+                    g_self_animator.SetBool("isAttack", false);
+                    g_self_kinematic.velocity = new Vector2(2, 0);
+                    SetDirect(false);
                 }
                 else{
                     g_self_animator.SetBool("isWalk", true);
-                    g_self_kinematic.velocity = new Vector2(2f, 0);
+                    g_self_kinematic.velocity = new Vector2(1.8f, 0);
+                    SetDirect(true);
                 }
             }
         }
         if(a_is_sweeping && IsCooldownFinish()){
-            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.3f)){
+            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.4f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
                         if(i.collider.tag == "Mob"){
-                            i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, 0.7f);
+                            i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, 0.2f);
                             StartCooldown();
                         }
                     }
@@ -101,6 +122,7 @@ public class Player : MonoBehaviour
             g_self_kinematic.velocity = Vector2.zero;
             a_attack_end = false;
         }
+
         if(a_walk_end){
             if(GetNowInput() == PlayerInput.NOTHING){
                 g_self_animator.SetBool("isWalk", false); // 關閉攻擊動畫
@@ -108,10 +130,16 @@ public class Player : MonoBehaviour
                 a_walk_end = false;
             }
         }
-        if(g_self_animator.GetBool("isWalk") && GetEndInput() != PlayerInput.NOTHING){
-                g_self_animator.SetBool("isWalk", false); // 關閉攻擊動畫
+        if(g_self_animator.GetBool("isWalk") && GetEndInput() != PlayerInput.NOTHING){ //長按持續行走
+                g_self_animator.SetBool("isWalk", false);
                 g_self_kinematic.velocity = Vector2.zero;
                 a_walk_end = false;
+        }
+
+        if(a_dodge_end){
+            g_self_animator.SetBool("isDodge", false);
+            g_self_kinematic.velocity = Vector2.zero;
+            a_dodge_end = false;
         }
     }
     private void ExcuteLight(){
@@ -168,5 +196,14 @@ public class Player : MonoBehaviour
     private bool IsCooldownFinish(){
         return g_attack_cooldown_remaining < Time.time;
     }
-    
+    public void Death(){
+        g_death_particle.Play();
+        GetComponent<SpriteRenderer>().enabled = false;
+        Destroy(g_self_kinematic);
+        g_death = true;
+        Destroy(gameObject, 1f); 
+    }
+    public bool IsDeath(){
+        return g_death;
+    }
 }

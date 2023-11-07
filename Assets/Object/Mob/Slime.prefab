@@ -256,7 +256,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 2.74, y: -0.635}
+  m_AnchoredPosition: {x: 3.7656348, y: 0.66}
   m_SizeDelta: {x: 0.64, y: 0.64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &4886728778230672082
@@ -407,6 +407,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   knockback: {x: 0, y: 0}
+  gravity: 1
   knockback_resistance: 75
   avoid_collision_tags:
   - Mob
