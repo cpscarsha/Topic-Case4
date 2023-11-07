@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
         NOTHING
     };
     public bool a_attack_end = false;
+    public bool a_walk_end = false;
     public bool a_is_sweeping = false;
     public float g_health;
     public float g_max_health;
@@ -36,19 +37,35 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerInput now_input = GetInput();
+        PlayerInput now_input = GetBeginInput();
+        // if(a_attack_end && a_walk_end && now_input == PlayerInput.LEFT || now_input == PlayerInput.RIGHT)
         if(now_input == PlayerInput.LEFT || now_input == PlayerInput.RIGHT){
-            g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
             SetDirect(now_input == PlayerInput.RIGHT);
             if(now_input == PlayerInput.LEFT){
-                g_self_kinematic.velocity = new Vector2(-2, 0);
+                if(g_self_kinematic.CheckCollisionIn(Vector2.left, 3)){
+                    g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
+                    g_self_animator.SetBool("isWalk", false);
+                    g_self_kinematic.velocity = new Vector2(-2, 0);
+                }
+                else{
+                    g_self_animator.SetBool("isWalk", true);
+                    g_self_kinematic.velocity = new Vector2(-2f, 0);
+                }
             }
             else{
-                g_self_kinematic.velocity = new Vector2(2, 0);
+                if(g_self_kinematic.CheckCollisionIn(Vector2.right, 3)){
+                    g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
+                    g_self_animator.SetBool("isWalk", false);
+                    g_self_kinematic.velocity = new Vector2(2, 0);
+                }
+                else{
+                    g_self_animator.SetBool("isWalk", true);
+                    g_self_kinematic.velocity = new Vector2(2f, 0);
+                }
             }
         }
         if(a_is_sweeping && IsCooldownFinish()){
-            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
+            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.3f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
                         if(i.collider.tag == "Mob"){
@@ -84,18 +101,58 @@ public class Player : MonoBehaviour
             g_self_kinematic.velocity = Vector2.zero;
             a_attack_end = false;
         }
+        if(a_walk_end){
+            if(GetNowInput() == PlayerInput.NOTHING){
+                g_self_animator.SetBool("isWalk", false); // 關閉攻擊動畫
+                g_self_kinematic.velocity = Vector2.zero;
+                a_walk_end = false;
+            }
+        }
+        if(g_self_animator.GetBool("isWalk") && GetEndInput() != PlayerInput.NOTHING){
+                g_self_animator.SetBool("isWalk", false); // 關閉攻擊動畫
+                g_self_kinematic.velocity = Vector2.zero;
+                a_walk_end = false;
+        }
     }
     private void ExcuteLight(){
         float display_light = g_health/g_max_health;
         if(display_light < 0)display_light = 0;
         GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2*display_light;
     }
-    private PlayerInput GetInput(){
+    private PlayerInput GetNowInput(){
+        if(Input.touches.Length > 0){
+            Touch touch = Input.touches[0];
+            Vector3 touch_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
+            if(touch_position.x > Camera.main.transform.position.x){
+                return PlayerInput.RIGHT;
+            }
+            else{
+                return PlayerInput.LEFT;
+            }
+        }
+        return PlayerInput.NOTHING;
+    }
+    private PlayerInput GetBeginInput(){
         if(Input.touches.Length > 0){
             Touch touch = Input.touches[0];
             if(touch.phase == TouchPhase.Began){
                 Vector3 touch_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-                if(touch_position.x > transform.position.x){
+                if(touch_position.x > Camera.main.transform.position.x){
+                    return PlayerInput.RIGHT;
+                }
+                else{
+                    return PlayerInput.LEFT;
+                }
+            }
+        }
+        return PlayerInput.NOTHING;
+    }
+    private PlayerInput GetEndInput(){
+        if(Input.touches.Length > 0){
+            Touch touch = Input.touches[0];
+            if(touch.phase == TouchPhase.Ended){
+                Vector3 touch_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
+                if(touch_position.x > Camera.main.transform.position.x){
                     return PlayerInput.RIGHT;
                 }
                 else{
