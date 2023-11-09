@@ -42,6 +42,9 @@ public class Kinematic : MonoBehaviour
             if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
             else knockback.y = 0;
         }
+        else{
+            velocity.x = 0;
+        }
 
         g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y)*Time.fixedDeltaTime);
 
