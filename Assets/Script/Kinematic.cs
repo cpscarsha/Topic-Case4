@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.FullSerializer;
 using UnityEditor.Rendering;
 using UnityEngine;
 
@@ -77,5 +78,12 @@ public class Kinematic : MonoBehaviour
             }
         }
         return collision_num > 0;
+    }
+    public bool HasCollision(float distance){
+        if(CheckCollisionIn(Vector2.up, distance))return true;
+        if(CheckCollisionIn(Vector2.down, distance))return true;
+        if(CheckCollisionIn(Vector2.right, distance))return true;
+        if(CheckCollisionIn(Vector2.left, distance))return true;
+        return false;
     }
 }

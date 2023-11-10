@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine;
+using UnityEditor.UI;
+using UnityEngine.UIElements;
 
 public class Player : MonoBehaviour
 {
@@ -40,52 +42,72 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // PlayerInput now_input = GetBeginTouchInput();
+        // if(now_input != PlayerInput.NOTHING){
+        //     if(now_input == PlayerInput.LEFT){
+        //         if(g_self_kinematic.CheckCollisionIn(Vector2.left, 2)){
+        //             g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
+        //             g_self_animator.SetBool("isWalk", false);
+        //             g_self_animator.SetBool("isDodge", false);
+        //             g_self_kinematic.velocity.x = -2;
+        //             SetDirect(false);
+        //         }
+        //         else if(g_self_kinematic.CheckCollisionIn(Vector2.right, 1)){
+        //             g_self_animator.SetBool("isDodge", true);
+        //             g_self_animator.SetBool("isWalk", false);
+        //             g_self_animator.SetBool("isAttack", false);
+        //             g_self_kinematic.velocity.x = -2;
+        //             SetDirect(true);
+        //         }
+        //         else{
+        //             g_self_animator.SetBool("isWalk", true);
+        //             g_self_kinematic.velocity.x = -1.8f;
+        //             SetDirect(false);
+        //         }
+        //     }
+        //     else{
+        //         if(g_self_kinematic.CheckCollisionIn(Vector2.right, 2)){
+        //             g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
+        //             g_self_animator.SetBool("isWalk", false);
+        //             g_self_animator.SetBool("isDodge", false);
+        //             g_self_kinematic.velocity.x = 2;
+        //             SetDirect(true);
+        //         }
+        //         else if(g_self_kinematic.CheckCollisionIn(Vector2.left, 1)){
+        //             g_self_animator.SetBool("isDodge", true);
+        //             g_self_animator.SetBool("isWalk", false);
+        //             g_self_animator.SetBool("isAttack", false);
+        //             g_self_kinematic.velocity.x = 2;
+        //             SetDirect(false);
+        //         }
+        //         else{
+        //             g_self_animator.SetBool("isWalk", true);
+        //             g_self_kinematic.velocity.x = 1.8f;
+        //             SetDirect(true);
+        //         }
+        //     }
+        // }
+
+        
         PlayerInput now_input = GetBeginTouchInput();
-        // if(a_attack_end && a_walk_end && now_input == PlayerInput.LEFT || now_input == PlayerInput.RIGHT)
-        if(now_input != PlayerInput.NOTHING){
+        string[] temp = g_self_kinematic.avoid_collision_tags;
+        g_self_kinematic.avoid_collision_tags = new string[1];
+        g_self_kinematic.avoid_collision_tags[0] = "Background";
+        if((now_input != PlayerInput.NOTHING) && !g_self_kinematic.HasCollision(1.5f)){
             if(now_input == PlayerInput.LEFT){
-                if(g_self_kinematic.CheckCollisionIn(Vector2.left, 2)){
-                    g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
-                    g_self_animator.SetBool("isWalk", false);
-                    g_self_animator.SetBool("isDodge", false);
-                    g_self_kinematic.velocity.x = -2;
-                    SetDirect(false);
-                }
-                else if(g_self_kinematic.CheckCollisionIn(Vector2.right, 1)){
-                    g_self_animator.SetBool("isDodge", true);
-                    g_self_animator.SetBool("isWalk", false);
-                    g_self_animator.SetBool("isAttack", false);
-                    g_self_kinematic.velocity.x = -2;
-                    SetDirect(true);
-                }
-                else{
-                    g_self_animator.SetBool("isWalk", true);
-                    g_self_kinematic.velocity.x = -1.8f;
-                    SetDirect(false);
-                }
+                g_self_animator.SetBool("isWalk", true);
+                g_self_kinematic.velocity.x = -1.8f;
+                SetDirect(false);
             }
             else{
-                if(g_self_kinematic.CheckCollisionIn(Vector2.right, 2)){
-                    g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
-                    g_self_animator.SetBool("isWalk", false);
-                    g_self_animator.SetBool("isDodge", false);
-                    g_self_kinematic.velocity.x = 2;
-                    SetDirect(true);
-                }
-                else if(g_self_kinematic.CheckCollisionIn(Vector2.left, 1)){
-                    g_self_animator.SetBool("isDodge", true);
-                    g_self_animator.SetBool("isWalk", false);
-                    g_self_animator.SetBool("isAttack", false);
-                    g_self_kinematic.velocity.x = 2;
-                    SetDirect(false);
-                }
-                else{
-                    g_self_animator.SetBool("isWalk", true);
-                    g_self_kinematic.velocity.x = 1.8f;
-                    SetDirect(true);
-                }
+                g_self_animator.SetBool("isWalk", true);
+                g_self_kinematic.velocity.x = 1.8f;
+                SetDirect(true);
             }
         }
+        g_self_kinematic.avoid_collision_tags = temp;
+
+
         if(a_is_sweeping && IsCooldownFinish()){
             if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.4f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
@@ -100,7 +122,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        CheckSlideUp();
+        CheckSlide();
         ExcuteLight();
         ExcuteAnimator();
     }
@@ -108,6 +130,41 @@ public class Player : MonoBehaviour
     void SubscribeSlideUp(){
         if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.01f)){
             g_self_kinematic.velocity.y = 2;
+        }
+    }
+    void SubscribeSlideDown(){
+        Debug.Log("Down");
+    }
+    void SubscribeSlideRight(){
+        if(g_self_kinematic.CheckCollisionIn(Vector2.right, 1.5f)){
+            g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
+            g_self_animator.SetBool("isWalk", false);
+            g_self_animator.SetBool("isDodge", false);
+            g_self_kinematic.velocity.x = 2;
+            SetDirect(true);
+        }
+        else if(g_self_kinematic.CheckCollisionIn(Vector2.left, 1.5f)){
+            g_self_animator.SetBool("isDodge", true);
+            g_self_animator.SetBool("isWalk", false);
+            g_self_animator.SetBool("isAttack", false);
+            g_self_kinematic.velocity.x = 2;
+            SetDirect(false);
+        }
+    }
+    void SubscribeSlideLeft(){
+        if(g_self_kinematic.CheckCollisionIn(Vector2.left, 1.5f)){
+            g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
+            g_self_animator.SetBool("isWalk", false);
+            g_self_animator.SetBool("isDodge", false);
+            g_self_kinematic.velocity.x = -2;
+            SetDirect(false);
+        }
+        else if(g_self_kinematic.CheckCollisionIn(Vector2.right, 1.5f)){
+            g_self_animator.SetBool("isDodge", true);
+            g_self_animator.SetBool("isWalk", false);
+            g_self_animator.SetBool("isAttack", false);
+            g_self_kinematic.velocity.x = -2;
+            SetDirect(true);
         }
     }
     
@@ -200,7 +257,7 @@ public class Player : MonoBehaviour
     }
 
     private Vector2 g_touch_base_position;
-    private void CheckSlideUp(){
+    private void CheckSlide(){
         if(Input.touches.Length > 0){
             Touch touch = Input.touches[0];
             if(touch.phase == TouchPhase.Began){
@@ -212,10 +269,19 @@ public class Player : MonoBehaviour
                 if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
                     SubscribeSlideUp();
                 }
+                if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
+                    SubscribeSlideDown();
+                }
+                if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
+                    SubscribeSlideRight();
+                }
+                if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
+                    SubscribeSlideLeft();
+                }
             }
-        }
-            
+        }     
     }
+    
     private void StartCooldown(){
         g_attack_cooldown_remaining = Time.time + g_attack_cooldown;
     }
