@@ -90,7 +90,8 @@ public class Player : MonoBehaviour
             if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.4f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
-                        if(i.collider.tag == "Mob"){
+                        if(i.collider.CompareTag("Mob"))
+                        {
                             i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, 0.2f);
                             StartCooldown();
                         }
@@ -208,7 +209,7 @@ public class Player : MonoBehaviour
             if(touch.phase == TouchPhase.Ended){
                 Vector2 end_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
                 float theata = Mathf.Atan2(end_position.y-g_touch_base_position.y, end_position.x-g_touch_base_position.x);
-                if(theata <= Mathf.PI*2/3 && theata >= Mathf.PI/3){
+                if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
                     SubscribeSlideUp();
                 }
             }
