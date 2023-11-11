@@ -21,7 +21,6 @@ public class Kinematic : MonoBehaviour
     }
 
     void FixedUpdate(){
-        float now_speed = velocity.x;
         // if(CheckCollisionIn(Vector2.right, now_speed*Time.fixedDeltaTime+0.005f) && now_speed > 0){
         //     velocity = Vector2.zero;
         // }
@@ -33,23 +32,24 @@ public class Kinematic : MonoBehaviour
         //     g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x, g_self_rigidbody.position.y-gravity*Time.fixedDeltaTime);
         // }
         velocity.y -= gravity*Time.fixedDeltaTime;
+
+        if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
+        else knockback.x = 0;
+        if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
+        else knockback.y = 0;
         
-        if(CheckCollisionIn(Vector2.down, -velocity.y*Time.fixedDeltaTime+0.005f)){
+        if(CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y)*Time.fixedDeltaTime+0.01f)){
             velocity.y = 0;
+            knockback.y = 0;
         }
-        if(!CheckCollisionIn(Vector2.right, Mathf.Abs(now_speed*Time.fixedDeltaTime)+0.005f)){
-            if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
-            else knockback.x = 0;
-            if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
-            else knockback.y = 0;
-        }
-        else{
+
+        if(CheckCollisionIn(Vector2.right, (velocity.x + knockback.x)*Time.fixedDeltaTime+0.01f)){
             velocity.x = 0;
+            knockback.x = 0;
         }
+
 
         g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y)*Time.fixedDeltaTime);
-
-
         if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
             Destroy(GetComponent<MobBase>().gameObject);
         }
