@@ -17,19 +17,21 @@ public class Player : MonoBehaviour
     public bool a_is_sweeping = false;
     public float g_health;
     public float g_max_health;
+    
     // private Light2D g_self_light;
     private Animator g_self_animator;
-    private Rigidbody2D g_self_rigidbody;
+    // private Rigidbody2D g_self_rigidbody;
     private ParticleSystem g_death_particle;
     private bool g_death = false;
     private Kinematic g_self_kinematic;
+    public float g_attack = 0.2f;
     public float g_attack_cooldown = 0.2f;
     private float g_attack_cooldown_remaining = 0;
     // Start is called before the first frame update
     void Start()
     {
         g_self_animator = GetComponent<Animator>();
-        g_self_rigidbody = GetComponent<Rigidbody2D>();
+        // g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
         g_max_health = 100;
         g_health = 100;
@@ -46,7 +48,7 @@ public class Player : MonoBehaviour
                     try{
                         if(i.collider.CompareTag("Mob"))
                         {
-                            i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, 0.2f);
+                            i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
                             StartCooldown();
                         }
                     }
@@ -67,8 +69,8 @@ public class Player : MonoBehaviour
         g_self_kinematic.velocity.x = (GetDirect()?1:-1)*2;
     }
     void SlideUp(){
-        if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.01f)){
-            g_self_kinematic.velocity.y = 2;
+        if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
+            g_self_kinematic.velocity.y = 3;
         }
     }
     void SlideDown(){
@@ -98,13 +100,11 @@ public class Player : MonoBehaviour
         g_self_animator.SetBool("isWalk", true);
         g_self_kinematic.velocity.x = 1.8f;
         SetDirect(true);
-        Debug.Log('r');
     }
     void KeepSlideLeft(){
         g_self_animator.SetBool("isWalk", true);
         g_self_kinematic.velocity.x = -1.8f;
         SetDirect(false);
-        Debug.Log('l');
     }
     /*觸控觸發的函數*/
 

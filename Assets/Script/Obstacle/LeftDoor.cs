@@ -20,10 +20,14 @@ public class LeftDoor : MonoBehaviour
     {
         if(!g_is_close && g_player.transform.position.x - 0.3f > transform.position.x){
             g_self_kinematic.gravity = 20;
-        }
-        if(g_is_close && g_self_kinematic.CheckCollisionIn(Vector2.down, 0.005f)){
-            g_self_kinematic.gravity = 0;
+            g_self_kinematic.velocity.y = -0.01f;
             g_is_close = true;
         }
+        if(g_is_close && g_self_kinematic.CheckCollisionIn(Vector2.down, 0.02f)){
+            g_self_kinematic.gravity = 0;
+        }
+    }
+    public bool IsClose(){
+        return g_is_close;
     }
 }
