@@ -20,7 +20,7 @@ public class Stage1 : StageBase
             FinishStage();
         }
         if(StageIsEnd()){
-            Instantiate(NextStage[0]);
+            Instantiate(NextStage[Random.Range(0, NextStage.Length)]);
             Destroy(gameObject);
         }
     }

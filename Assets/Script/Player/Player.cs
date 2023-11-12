@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public bool a_walk_end = false;
     public bool a_dodge_end = false;
     public bool a_is_sweeping = false;
+    public GameObject g_gameover;
     public float g_health;
     public float g_max_health;
     
@@ -56,6 +57,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        
         CheckSlide();
         ExcuteLight();
         ExcuteAnimator();
@@ -148,10 +150,16 @@ public class Player : MonoBehaviour
             a_dodge_end = false;
         }
     }
+
     private void ExcuteLight(){
-        float display_light = g_health/g_max_health;
-        if(display_light < 0)display_light = 0;
-        GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2*display_light;
+        if(g_death){
+            GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 1.5f*Mathf.Abs((int)(100*Time.time)%200/5.0f-20);
+        }
+        else{
+            float display_light = g_health/g_max_health;
+            if(display_light < 0)display_light = 0;
+            GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2*display_light;
+        }
     }
     private PlayerInput GetNowInput(){
         if(Input.touches.Length > 0){
@@ -258,11 +266,14 @@ public class Player : MonoBehaviour
         return g_attack_cooldown_remaining < Time.time;
     }
     public void Death(){
-        g_death_particle.Play();
+        // g_death_particle.Play();
+        g_gameover.SetActive(true);
         GetComponent<SpriteRenderer>().enabled = false;
-        Destroy(g_self_kinematic);
+        g_self_kinematic.enabled = false;
+        GetComponent<BoxCollider2D>().enabled = false;
+        GetComponent<Animator>().enabled = false;
         g_death = true;
-        Destroy(gameObject, 1f); 
+        // Destroy(gameObject, 1f); 
     }
     public bool IsDeath(){
         return g_death;
