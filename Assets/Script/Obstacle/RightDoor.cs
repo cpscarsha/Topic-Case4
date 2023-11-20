@@ -16,4 +16,8 @@ public class RightDoor : MonoBehaviour
     {
 
     }
+
+    public void OpenDoor(){
+        
+    }
 }
