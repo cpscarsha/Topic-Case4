@@ -64,6 +64,7 @@ public class Player : MonoBehaviour
     }
     
     /*觸控觸發的函數*/
+    private bool g_is_buffer_move = false;
     void Click(){ // 點擊螢幕時觸發
         g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
         g_self_animator.SetBool("isWalk", false);
@@ -71,12 +72,12 @@ public class Player : MonoBehaviour
         g_self_kinematic.velocity.x = (GetDirect()?1:-1)*2;
     }
     void SlideUp(){
-        if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
-            g_self_kinematic.velocity.y = 3;
-        }
+        // if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
+        //     g_self_kinematic.velocity.y = 3;
+        // }
     }
     void SlideDown(){
-        g_self_kinematic.velocity.y = -2;
+        // g_self_kinematic.velocity.y = -2;
     }
     void SlideRight(){
         g_self_animator.SetBool("isDodge", true);
@@ -93,7 +94,9 @@ public class Player : MonoBehaviour
         SetDirect(true);
     }
     void KeepSlideUp(){
-
+        // if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
+        //     g_self_kinematic.velocity.y = 3;
+        // }
     }
     void KeepSlideDown(){
 
@@ -107,6 +110,30 @@ public class Player : MonoBehaviour
         g_self_animator.SetBool("isWalk", true);
         g_self_kinematic.velocity.x = -1.8f;
         SetDirect(false);
+    }
+    void ShortSlideUp(){
+        if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
+            g_self_kinematic.velocity.y = 3;
+            Debug.Log("up");
+        }
+        if(g_is_buffer_move){
+            g_is_buffer_move = false;
+            g_self_kinematic.velocity.x = 0;
+        }
+    }
+    void ShortSlideDown(){
+        if(g_is_buffer_move){
+            g_is_buffer_move = false;
+            g_self_kinematic.velocity.x = 0;
+        }
+    }
+    void ShortSlideRight(){
+        g_self_kinematic.velocity.x = 1f;
+        g_is_buffer_move = true;
+    }
+    void ShortSlideLeft(){
+        g_self_kinematic.velocity.x = -1f;
+        g_is_buffer_move = true;
     }
     /*觸控觸發的函數*/
 
@@ -212,14 +239,14 @@ public class Player : MonoBehaviour
         if(Input.touches.Length > 0){
             Touch touch = Input.touches[0];
             g_touch_duration = Time.time-g_touch_begin_time;
+            Vector2 end_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
+            float theata = Mathf.Atan2(end_position.y-g_touch_base_position.y, end_position.x-g_touch_base_position.x);
             if(touch.phase == TouchPhase.Began){
                 g_touch_base_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
                 g_touch_begin_time = Time.time;
                 g_touch_duration = 0;
             }
             else if(touch.phase == TouchPhase.Ended){
-                Vector2 end_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-                float theata = Mathf.Atan2(end_position.y-g_touch_base_position.y, end_position.x-g_touch_base_position.x);
                 if(g_touch_duration < 0.15f){
                     if(Vector2.Distance(g_touch_base_position, end_position) < 0.3f){
                         Click();
@@ -228,32 +255,44 @@ public class Player : MonoBehaviour
                         if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
                             SlideUp();
                         }
-                        if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
+                        else if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
                             SlideDown();
                         }
-                        if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
+                        else if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
                             SlideRight();
                         }
-                        if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
+                        else if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
                             SlideLeft();
                         }
                     }
                 }
             }
             else if(g_touch_duration > 0.15f){
-                Vector2 end_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-                float theata = Mathf.Atan2(end_position.y-g_touch_base_position.y, end_position.x-g_touch_base_position.x);
                 if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
                     KeepSlideUp();
                 }
-                if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
+                else if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
                     KeepSlideDown();
                 }
-                if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
+                else if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
                     KeepSlideRight();
                 }
-                if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
+                else if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
                     KeepSlideLeft();
+                }
+            }
+            else{
+                if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
+                    ShortSlideUp();
+                }
+                else if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
+                    ShortSlideDown();
+                }
+                else if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
+                    ShortSlideRight();
+                }
+                else if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
+                    ShortSlideLeft();
                 }
             }
         }     

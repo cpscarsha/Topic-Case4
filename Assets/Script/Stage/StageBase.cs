@@ -9,7 +9,9 @@ public class StageBase : MonoBehaviour
     public LeftDoor g_left_door;
     public RightDoor g_right_door;
     public GameObject[] g_summon_mobs;
-    public Vector2 g_summon_distance;
+    public Vector2 g_mobs_summon_distance;
+    public GameObject[] g_summon_obstacles;
+    public Vector2[] g_obstacles_summon_position;
     public bool g_stage_is_begin = false;
     protected Player g_player;
     private bool g_right_door_is_summon = false;
@@ -17,7 +19,7 @@ public class StageBase : MonoBehaviour
         if(!g_stage_is_begin && transform.GetChild(0).GetComponent<LeftDoor>().IsClose()){
             g_stage_is_begin = true;
             foreach(GameObject mob in g_summon_mobs){
-                Instantiate(mob, new Vector3(g_player.transform.position.x+Random.Range(g_summon_distance.x, g_summon_distance.y), -0.6f, 0), new Quaternion(0, 0, 0, 0));
+                Instantiate(mob, new Vector3(g_player.transform.position.x+Random.Range(g_mobs_summon_distance.x, g_mobs_summon_distance.y), -0.6f, 0), new Quaternion(0, 0, 0, 0));
             }
         }
     }

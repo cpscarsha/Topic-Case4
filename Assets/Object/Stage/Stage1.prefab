@@ -50,7 +50,9 @@ MonoBehaviour:
   - {fileID: 7728513859098005249, guid: 6337f5c0bf0311041aa6592334e47f7a, type: 3}
   - {fileID: 7728513859098005249, guid: 6337f5c0bf0311041aa6592334e47f7a, type: 3}
   - {fileID: 7728513859098005249, guid: 6337f5c0bf0311041aa6592334e47f7a, type: 3}
-  g_summon_distance: {x: 1.2, y: 5}
+  g_mobs_summon_distance: {x: 0.3, y: 1.2}
+  g_summon_obstacles: []
+  g_obstacles_summon_position: []
   g_stage_is_begin: 0
   NextStage:
   - {fileID: 3410401052211523672, guid: 755b893456c5a5f49bd5cf5c213b26a9, type: 3}

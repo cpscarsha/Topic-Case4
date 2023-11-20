@@ -11,6 +11,7 @@ public class Kinematic : MonoBehaviour
     public Vector2 knockback;
     public float gravity = 1f;
     public float knockback_resistance = 0;
+    public float ground = 0f;
     public string[] avoid_collision_tags;
     public RaycastHit2D[] g_collision_result;
     private Collider2D g_self_collider;
@@ -39,6 +40,10 @@ public class Kinematic : MonoBehaviour
         else knockback.y = 0;
         
         if((velocity.y + knockback.y < 0 && CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y)*Time.fixedDeltaTime+0.015f)) || (velocity.y + knockback.y > 0 && CheckCollisionIn(Vector2.up, (velocity.y + knockback.y)*Time.fixedDeltaTime+0.015f))){
+            velocity.y = 0;
+            knockback.y = 0;
+        }
+        if((velocity.y + knockback.y)*Time.fixedDeltaTime + g_self_rigidbody.position.y + GetComponent<BoxCollider2D>().size.y/2.0f + g_self_collider.offset.y <= ground){
             velocity.y = 0;
             knockback.y = 0;
         }
