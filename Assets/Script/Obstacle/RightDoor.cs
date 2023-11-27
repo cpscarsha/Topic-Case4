@@ -5,6 +5,7 @@ using UnityEngine;
 public class RightDoor : MonoBehaviour
 {
     private Player g_player;
+    private bool g_is_opening_door = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,10 +15,12 @@ public class RightDoor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if(g_is_opening_door && transform.position.y <= 1.6){
+            transform.position += new Vector3(0, 5*Time.fixedDeltaTime, 0);
+        }
     }
 
     public void OpenDoor(){
-        
+        g_is_opening_door = true;
     }
 }

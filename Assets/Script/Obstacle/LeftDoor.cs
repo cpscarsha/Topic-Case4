@@ -18,14 +18,15 @@ public class LeftDoor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!g_is_close && g_player.transform.position.x - 0.3f > transform.position.x){
+        if(g_is_close && g_self_kinematic.CheckCollisionIn(Vector2.down, 0.1f)){
+            g_self_kinematic.gravity = 0;
+        }
+        else if(!g_is_close && g_player.transform.position.x - 0.3f > transform.position.x){
             g_self_kinematic.gravity = 20;
             g_self_kinematic.velocity.y = -0.01f;
             g_is_close = true;
         }
-        if(g_is_close && g_self_kinematic.CheckCollisionIn(Vector2.down, 0.02f)){
-            g_self_kinematic.gravity = 0;
-        }
+        
     }
     public bool IsClose(){
         return g_is_close;

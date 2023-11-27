@@ -15,6 +15,9 @@ public class Dungeon : MonoBehaviour
     void Start()
     {
         g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        foreach(GameObject mob in g_summon_mobs_scenes){
+            mob.SetActive(false);
+        }
     }
 
     // Update is called once per frame
@@ -34,6 +37,9 @@ public class Dungeon : MonoBehaviour
                 level += 1;
                 g_summon_mobs_scenes[level-1].gameObject.SetActive(true);
             }
+        }
+        if(g_player.transform.position.x >= 1.6f+transform.GetChild(1).transform.position.x){
+            Destroy(gameObject);
         }
     }
 

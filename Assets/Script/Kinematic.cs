@@ -59,9 +59,9 @@ public class Kinematic : MonoBehaviour
 
 
         g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y)*Time.fixedDeltaTime);
-        if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
-            Destroy(GetComponent<MobBase>().gameObject);
-        }
+        // if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
+        //     Destroy(GetComponent<MobBase>().gameObject);
+        // }
     }
     public void GetForce(Vector2 force){
         velocity += force;
