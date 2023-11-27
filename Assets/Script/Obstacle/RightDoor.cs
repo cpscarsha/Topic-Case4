@@ -16,7 +16,7 @@ public class RightDoor : MonoBehaviour
     void Update()
     {
         if(g_is_opening_door && transform.position.y <= 1.6){
-            transform.position += new Vector3(0, 5*Time.fixedDeltaTime, 0);
+            transform.position += new Vector3(0, 1*Time.fixedDeltaTime, 0);
         }
     }
 
