@@ -70,6 +70,13 @@ public class MobBase : MonoBehaviour
         return g_death;
     }
 
+    public Vector4 GetSummonRange(){ // 回傳(左下角x, 左下角y, x長度, y長度)
+        Transform summon_range = transform.Find("SummonRange").transform;
+        Vector2 summon_base_pos = summon_range.position;
+        float width = summon_range.localScale.x/0.25f;
+        float height = summon_range.localScale.y/0.25f;
+        return new Vector4(summon_base_pos.x-0.25f*width/2, summon_base_pos.y-0.25f*height/2, width, height);
+    }
     // public float GetHealth(){
     //     return g_health;
     // }

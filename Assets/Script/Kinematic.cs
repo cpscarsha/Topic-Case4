@@ -95,4 +95,12 @@ public class Kinematic : MonoBehaviour
         if(CheckCollisionIn(Vector2.left, distance))return true;
         return false;
     }
+    public bool IsStuck(){ // 被卡在牆裡
+        try{
+            return CheckCollisionIn(Vector2.down, 0f);
+        }
+        catch{
+            return false;
+        }
+    }
 }

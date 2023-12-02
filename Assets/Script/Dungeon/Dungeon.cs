@@ -43,6 +43,9 @@ public class Dungeon : MonoBehaviour
         }
     }
 
+    // private void MobSummon(int summon_level){
+    //     g_summon_mobs_scenes[level-1].gameObject.SetActive(true);
+    // }
     private bool MobCleared(){
         GameObject[] mobs = GameObject.FindGameObjectsWithTag("Mob");
         return mobs.Length == 0;
