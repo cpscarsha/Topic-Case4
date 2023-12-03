@@ -15,9 +15,7 @@ public class Dungeon : MonoBehaviour
     void Start()
     {
         g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-        foreach(GameObject mob in g_summon_mobs_scenes){
-            mob.SetActive(false);
-        }
+        level = 1;
     }
 
     // Update is called once per frame
@@ -26,19 +24,18 @@ public class Dungeon : MonoBehaviour
         if(!g_stage_is_begin && g_left_door.IsClose()){
             g_stage_is_begin = true;
             level = 1;
-            g_summon_mobs_scenes[level-1].gameObject.SetActive(true);
+            g_summon_mobs_scenes[level-1].GetComponent<DungeonLevel>().Active();
         }
-        if(g_stage_is_begin && MobCleared()){
-            if(level >= g_summon_mobs_scenes.Length){
+        else if(g_stage_is_begin && MobCleared() && level <= g_summon_mobs_scenes.Length){
+            if(++level > g_summon_mobs_scenes.Length){
                 g_stage_is_end = true;
                 g_right_door.OpenDoor();
             }
             else{
-                level += 1;
-                g_summon_mobs_scenes[level-1].gameObject.SetActive(true);
+                g_summon_mobs_scenes[level-1].GetComponent<DungeonLevel>().Active();
             }
         }
-        if(g_player.transform.position.x >= 1.6f+transform.GetChild(1).transform.position.x){
+        else if(g_player.transform.position.x >= 1.6f+transform.GetChild(1).transform.position.x){
             Destroy(gameObject);
         }
     }

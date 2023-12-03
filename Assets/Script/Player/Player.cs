@@ -57,7 +57,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
-        
+        // Debug.Log(g_self_kinematic.IsStuck());
         CheckSlide();
         ExcuteLight();
         ExcuteAnimator();
@@ -114,7 +114,6 @@ public class Player : MonoBehaviour
     void ShortSlideUp(){
         if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
             g_self_kinematic.velocity.y = 3;
-            Debug.Log("up");
         }
         if(g_is_buffer_move){
             g_is_buffer_move = false;
