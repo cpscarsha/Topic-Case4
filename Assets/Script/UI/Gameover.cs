@@ -15,7 +15,7 @@ public class Gameover : MonoBehaviour
     void Update()
     {
         if(Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Began){
-            SceneManager.LoadScene("SampleScene");
+            SceneManager.LoadScene("test1");
         }
     }
 }
