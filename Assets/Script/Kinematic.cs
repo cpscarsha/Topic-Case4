@@ -39,7 +39,7 @@ public class Kinematic : MonoBehaviour
         if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
         else knockback.y = 0;
         
-        if((velocity.y + knockback.y < 0 && CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y)*Time.fixedDeltaTime+0.015f)) || (velocity.y + knockback.y > 0 && CheckCollisionIn(Vector2.up, (velocity.y + knockback.y)*Time.fixedDeltaTime+0.015f))){
+        if((velocity.y + knockback.y < 0 && CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y)*Time.fixedDeltaTime+0.005f)) || (velocity.y + knockback.y > 0 && CheckCollisionIn(Vector2.up, (velocity.y + knockback.y)*Time.fixedDeltaTime+0.005f))){
             velocity.y = 0;
             knockback.y = 0;
         }
@@ -48,7 +48,7 @@ public class Kinematic : MonoBehaviour
             knockback.y = 0;
         }
 
-        if((velocity.x + knockback.x > 0 && CheckCollisionIn(Vector2.right, (velocity.x + knockback.x)*Time.fixedDeltaTime+0.015f)) || (velocity.x + knockback.x < 0 && CheckCollisionIn(Vector2.left, -(velocity.x + knockback.x)*Time.fixedDeltaTime+0.015f))){
+        if((velocity.x + knockback.x > 0 && CheckCollisionIn(Vector2.right, (velocity.x + knockback.x)*Time.fixedDeltaTime+0.005f)) || (velocity.x + knockback.x < 0 && CheckCollisionIn(Vector2.left, -(velocity.x + knockback.x)*Time.fixedDeltaTime+0.005f))){
             velocity.x = 0;
             knockback.x = 0;
         }

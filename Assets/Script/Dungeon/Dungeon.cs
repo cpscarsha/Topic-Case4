@@ -6,6 +6,7 @@ public class Dungeon : MonoBehaviour
 {
     public LeftDoor g_left_door;
     public RightDoor g_right_door;
+    public GameObject[] g_next_dungeon;
     public GameObject[] g_summon_mobs_scenes; // 長度決定最大波次
     public int level = 1; // 當前波次
     public bool g_stage_is_begin = false;
@@ -36,6 +37,7 @@ public class Dungeon : MonoBehaviour
             }
         }
         else if(g_player.transform.position.x >= 1.6f+transform.GetChild(1).transform.position.x){
+            Instantiate(g_next_dungeon[Random.Range(0, g_next_dungeon.Length-1)], new Vector3(transform.position.x+1.6f+(transform.GetChild(1).transform.position.x-transform.GetChild(0).transform.position.x)/2, transform.position.y, 0), new Quaternion(0, 0, 0, 0));
             Destroy(gameObject);
         }
     }
