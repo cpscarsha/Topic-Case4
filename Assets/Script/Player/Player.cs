@@ -32,6 +32,9 @@ public class Player : MonoBehaviour
     
     public float g_attack_cooldown = 5f;
     private float g_attack_cooldown_remaining = 0;
+    public float g_attack_delay = 0.2f;
+    public float g_attack_delay_remaining = 0;
+    public float t_time;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,8 +50,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        t_time = Time.time;
         if(a_is_sweeping && IsCooldownFinish()){
-            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.4f)){
+            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
                 foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                     try{
                         if(i.collider.CompareTag("Mob"))
@@ -100,6 +104,7 @@ public class Player : MonoBehaviour
         g_self_animator.SetBool("isAttack", false);
         g_self_kinematic.velocity.x = 2;
         a_attack_end_level = 0;
+        Debug.Log("c");
         g_self_animator.SetInteger("AttackLevel", 0);
         SetDirect(false);
     }
@@ -109,6 +114,7 @@ public class Player : MonoBehaviour
         g_self_animator.SetBool("isAttack", false);
         g_self_kinematic.velocity.x = -2;
         a_attack_end_level = 0;
+        Debug.Log("d");
         g_self_animator.SetInteger("AttackLevel", 0);
         SetDirect(true);
     }
@@ -181,6 +187,8 @@ public class Player : MonoBehaviour
     private bool GetDirect(){ // 取得朝向，true時向右
         return transform.localScale.x > 0;
     }
+
+    private bool g_is_attack_ending = false;
     private void ExcuteAnimator(){ // 處理動畫造成的變數變化
         // if(a_attack_end){
         //     g_self_animator.SetBool("isAttack", false); // 關閉攻擊動畫
@@ -201,14 +209,25 @@ public class Player : MonoBehaviour
         //     a_walk_end = false;
         // }
         int attack_level = g_self_animator.GetInteger("AttackLevel");
-        if(a_attack_end_level >= attack_level && Time.time < g_attack_cooldown_remaining){
-            g_attack_cooldown_remaining = g_attack_cooldown+Time.time;
+        
+        if(a_attack_end_level != 0 && a_attack_end_level >= attack_level && !g_is_attack_ending){
+            g_attack_delay_remaining = g_attack_delay+Time.time;
+            g_is_attack_ending = true;
+            Debug.Log("a");
         }
-        if(a_attack_end_level >= attack_level && Time.time >= g_attack_cooldown_remaining){
+        else if(a_attack_end_level == 3 || a_attack_end_level != 0 && g_is_attack_ending && a_attack_end_level >= attack_level && Time.time > g_attack_delay_remaining){
             attack_level = 0;
             a_attack_end_level = 0;
-            g_self_animator.SetInteger("AttackLevel", attack_level);
+            g_is_attack_ending = false;
+            g_self_animator.SetInteger("AttackLevel", 0);
+            Debug.Log("b");
         }
+        // else if(Time.time > g_attack_delay_remaining){
+        //     g_attack_delay_remaining = 0;
+        //     Debug.Log("d");
+        // }
+        
+        
         
         if(a_dodge_end){
             g_self_kinematic.velocity.x = 0;

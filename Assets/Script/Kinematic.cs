@@ -99,11 +99,11 @@ public class Kinematic : MonoBehaviour
         Collider2D[] result = new Collider2D[2];
         ContactFilter2D filter = new();
         filter.NoFilter();
-        try{
+        // try{
             return g_self_collider.OverlapCollider(filter, result) > 0;
-        }
-        catch{
-            return false;
-        }
+        // }
+        // catch{
+        //     return true;
+        // }
     }
 }
