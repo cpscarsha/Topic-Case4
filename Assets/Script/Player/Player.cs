@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     private Kinematic g_self_kinematic;
     // private int g_attack_level = 0;
     public float g_attack = 0.2f;
-    public float g_attack_cooldown = 0.2f;
+    public float g_attack_cooldown = 5f;
     private float g_attack_cooldown_remaining = 0;
     // Start is called before the first frame update
     void Start()
@@ -98,6 +98,8 @@ public class Player : MonoBehaviour
         g_self_animator.SetBool("isWalk", false);
         g_self_animator.SetBool("isAttack", false);
         g_self_kinematic.velocity.x = 2;
+        a_attack_end_level = 0;
+        g_self_animator.SetInteger("AttackLevel", 0);
         SetDirect(false);
     }
     void SlideLeft(){
@@ -105,6 +107,8 @@ public class Player : MonoBehaviour
         g_self_animator.SetBool("isWalk", false);
         g_self_animator.SetBool("isAttack", false);
         g_self_kinematic.velocity.x = -2;
+        a_attack_end_level = 0;
+        g_self_animator.SetInteger("AttackLevel", 0);
         SetDirect(true);
     }
     void KeepSlideUp(){
@@ -143,8 +147,8 @@ public class Player : MonoBehaviour
     void ShortSlideDown(){
         if(!g_self_animator.GetBool("isDodge")){
             if(g_is_buffer_move){
-            g_is_buffer_move = false;
-            g_self_kinematic.velocity.x = 0;
+                g_is_buffer_move = false;
+                g_self_kinematic.velocity.x = 0;
             }
         }
     }
@@ -196,8 +200,12 @@ public class Player : MonoBehaviour
         //     a_walk_end = false;
         // }
         int attack_level = g_self_animator.GetInteger("AttackLevel");
-        if(a_attack_end_level >= attack_level){
+        if(a_attack_end_level >= attack_level && Time.time < g_attack_cooldown_remaining){
+            g_attack_cooldown_remaining = g_attack_cooldown+Time.time;
+        }
+        if(a_attack_end_level >= attack_level && Time.time >= g_attack_cooldown_remaining){
             attack_level = 0;
+            a_attack_end_level = 0;
             g_self_animator.SetInteger("AttackLevel", attack_level);
         }
         
