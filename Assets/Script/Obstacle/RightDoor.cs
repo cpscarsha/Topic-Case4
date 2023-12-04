@@ -15,7 +15,7 @@ public class RightDoor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(g_is_opening_door && transform.position.y <= 1.6){
+        if(g_is_opening_door && transform.position.y <= 4.263){
             transform.position += new Vector3(0, 1*Time.fixedDeltaTime, 0);
         }
     }
