@@ -29,6 +29,7 @@ public class Player : MonoBehaviour
     private Kinematic g_self_kinematic;
     // private int g_attack_level = 0;
     public float g_attack = 0.2f;
+    
     public float g_attack_cooldown = 5f;
     private float g_attack_cooldown_remaining = 0;
     // Start is called before the first frame update

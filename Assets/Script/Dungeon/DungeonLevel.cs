@@ -25,13 +25,17 @@ public class DungeonLevel : MonoBehaviour
                 int repect_count = 0;
                 do{
                     float x = 0.125f+(int)((summon_range.x-0.125f)/0.25f)*0.25f + Random.Range(0, (int)summon_range.z)*0.25f;
-                    float y = 0.125f+(int)((summon_range.y-0.125f)/0.25f)*0.25f + Random.Range(0, (int)summon_range.w)*0.25f;
+                    float y = summon_range.y + Random.Range(0, (int)summon_range.w)*0.25f;
                     mob.GetComponent<Rigidbody2D>().position = new Vector2(x, y); // 直接改變transform.position會導致mob.GetComponent<Kinematic>()來不及變化
                 }while(repect_count++ < 100 && mob.GetComponent<Kinematic>().IsStuck());
-                if(repect_count == 101)Destroy(mob.gameObject);
+                if(repect_count == 101){
+                    Debug.Log("die because repeat");
+                    Destroy(mob.gameObject);
+                }
             }
             else{
                 Destroy(transform.GetChild(i).gameObject);
+                Debug.Log("die because rate");
             }
         }
     }

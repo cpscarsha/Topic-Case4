@@ -33,7 +33,7 @@ public class Kinematic : MonoBehaviour
         //     g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x, g_self_rigidbody.position.y-gravity*Time.fixedDeltaTime);
         // }
         velocity.y -= gravity*Time.fixedDeltaTime;
-
+        
         if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
         else knockback.x = 0;
         if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
@@ -103,7 +103,7 @@ public class Kinematic : MonoBehaviour
             return g_self_collider.OverlapCollider(filter, result) > 0;
         }
         catch{
-            return true;
+            return false;
         }
     }
 }
