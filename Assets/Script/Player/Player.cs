@@ -34,6 +34,7 @@ public class Player : MonoBehaviour
     private float g_attack_cooldown_remaining = 0;
     public float g_attack_delay = 0.2f;
     public float g_attack_delay_remaining = 0;
+    public GameObject g_main_idle;
     public float t_time;
     // Start is called before the first frame update
     void Start()
@@ -50,25 +51,27 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        t_time = Time.time;
-        if(a_is_sweeping && IsCooldownFinish()){
-            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
-                foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
-                    try{
-                        if(i.collider.CompareTag("Mob"))
-                        {
-                            i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
-                            StartCooldown();
+        if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
+            t_time = Time.time;
+            if(a_is_sweeping && IsCooldownFinish()){
+                if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
+                    foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
+                        try{
+                            if(i.collider.CompareTag("Mob"))
+                            {
+                                i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
+                                StartCooldown();
+                            }
                         }
+                        catch{}
                     }
-                    catch{}
                 }
             }
+            // Debug.Log(g_self_animator.GetBool("isDodge"));
+            CheckSlide();
+            ExcuteLight();
+            ExcuteAnimator();
         }
-        // Debug.Log(g_self_animator.GetBool("isDodge"));
-        CheckSlide();
-        ExcuteLight();
-        ExcuteAnimator();
     }
     
     /*觸控觸發的函數*/
@@ -243,7 +246,7 @@ public class Player : MonoBehaviour
         else{
             float display_light = g_health/g_max_health;
             if(display_light < 0)display_light = 0;
-            GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 2*display_light;
+            GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 3*display_light + 0.3f;
         }
     }
     // private PlayerInput GetNowInput(){

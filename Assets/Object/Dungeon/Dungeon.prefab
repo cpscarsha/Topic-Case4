@@ -50,6 +50,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g_left_door: {fileID: 246957154506857757}
   g_right_door: {fileID: 798056205171652485}
+  g_next_dungeon:
+  - {fileID: 5299720701790843899, guid: 3b95931973cfb924583cafea3ea423d9, type: 3}
+  - {fileID: 1738604729015985232, guid: f8858944dba8eec499cf1175573f5f8b, type: 3}
   g_summon_mobs_scenes:
   - {fileID: 2306466946249542978}
   - {fileID: 3568528447308508888}

@@ -16,6 +16,11 @@ public class DungeonLevel : MonoBehaviour
 
     void Update(){
         if(g_active){
+            
+        }
+    }
+    public void ChangePosition(){
+        if(g_active){
             for(int i = 0; i < transform.childCount; i++){
                 if((i < g_summon_rate.Length?g_summon_rate[i]:100) > Random.Range(0f, 99.99f)){    
                     MobBase mob = transform.GetChild(i).GetComponent<MobBase>();
@@ -45,5 +50,6 @@ public class DungeonLevel : MonoBehaviour
             transform.GetChild(i).gameObject.SetActive(true);
         }
         g_active = true;
+        Invoke("ChangePosition", 0.02f);
     }
 }

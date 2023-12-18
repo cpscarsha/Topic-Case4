@@ -37,7 +37,10 @@ public class Dungeon : MonoBehaviour
             }
         }
         else if(g_player.transform.position.x >= 1.6f+transform.GetChild(1).transform.position.x){
-            Instantiate(g_next_dungeon[Random.Range(0, g_next_dungeon.Length-1)], new Vector3(transform.position.x+1.6f+(transform.GetChild(1).transform.position.x-transform.GetChild(0).transform.position.x)/2, transform.position.y, 0), new Quaternion(0, 0, 0, 0));
+            if(g_next_dungeon.Length != 0)
+                Instantiate(g_next_dungeon[Random.Range(0, g_next_dungeon.Length-1)], new Vector3(transform.position.x+8+(transform.GetChild(1).transform.position.x-transform.GetChild(0).transform.position.x)/2, transform.position.y, 0), new Quaternion(0, 0, 0, 0));
+            else
+                Debug.Log("GameFinishhhhhhhhhhhhhh");
             Destroy(gameObject);
         }
     }
