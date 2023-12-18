@@ -13,10 +13,21 @@ public class Slime : MobBase
         VariableInit();
     }
 
+    public float g_move_delay_time = 0;
     // Update is called once per frame
     void Update()
     {
-        bool is_right = g_player.transform.position.x > transform.position.x;
+        bool is_right = false;
+        if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.1f) && Mathf.Abs(g_player.transform.position.x - transform.position.x) < 0.1f && Mathf.Abs(g_player.transform.position.y - transform.position.y) > 0.1f){
+            is_right = true;
+            g_move_delay_time = Time.time + 1f;
+        }
+        if(g_move_delay_time < Time.time ){
+            is_right = g_player.transform.position.x > transform.position.x;
+        }
+        else{
+            is_right = GetDirect();
+        }
         SetDirect(is_right);
         if(a_is_jump){
             g_self_kinematic.velocity.x = (is_right?1:-1)*0.6f;

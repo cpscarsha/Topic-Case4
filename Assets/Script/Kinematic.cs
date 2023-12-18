@@ -63,15 +63,15 @@ public class Kinematic : MonoBehaviour
         //     Destroy(GetComponent<MobBase>().gameObject);
         // }
     }
-    public void GetForce(Vector2 force){
-        velocity += force;
-    }
-    public void GetXForce(float force){
-        velocity.x += force;
-    }
-    public void GetYForce(float force){
-        velocity.y += force;
-    }
+    // public void GetForce(Vector2 force){
+    //     velocity += force;
+    // }
+    // public void GetXForce(float force){
+    //     velocity.x += force;
+    // }
+    // public void GetYForce(float force){
+    //     velocity.y += force;
+    // }
     
     public bool CheckCollisionIn(Vector2 direction, float distance){
         g_collision_result = new RaycastHit2D[5];
