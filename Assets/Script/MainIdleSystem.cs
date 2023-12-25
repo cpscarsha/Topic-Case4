@@ -19,9 +19,11 @@ public class MainIdleSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {   
+        Debug.Log("connect:"+GameManager.g_is_connect);
         Random.seed = (int)Time.time*1000000;
-        if(Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended){
+        if(GameManager.g_is_connect && Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended){
             g_game_start = true;
+            g_camera.Follow = GameObject.FindWithTag("Player").transform;
             // g_camera.m_Lens.OrthographicSize = 2.35f;
             // g_camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset = new Vector3(0, -0.63f, 0);
         }

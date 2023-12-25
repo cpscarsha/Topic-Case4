@@ -39,9 +39,12 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("Player is Init");
+        GameManager.g_is_connect = true;
         g_self_animator = GetComponent<Animator>();
         // g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
+        g_main_idle = GameObject.Find("Main Idle System");
         g_max_health = 100;
         g_health = 100;
         // g_death_particle = GetComponent<ParticleSystem>();
