@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine;
+using Unity.Netcode.Components;
 
 public class Player : MonoBehaviour
 {
@@ -47,6 +48,8 @@ public class Player : MonoBehaviour
         g_main_idle = GameObject.Find("Main Idle System");
         g_max_health = 100;
         g_health = 100;
+
+        GetComponent<NetworkAnimator>().Animator = GetComponent<Animator>();
         // g_death_particle = GetComponent<ParticleSystem>();
         // g_self_light = GetComponent<Light2D>();
     }
