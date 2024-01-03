@@ -89,7 +89,8 @@ MonoBehaviour:
   gravity: 5
   knockback_resistance: 70
   ground: -0.635
-  avoid_collision_tags: []
+  avoid_collision_tags:
+  - Player
 --- !u!95 &6791019004475330885
 Animator:
   serializedVersion: 5
