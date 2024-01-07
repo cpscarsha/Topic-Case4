@@ -11,17 +11,21 @@ public class Dungeon : MonoBehaviour
     public int level = 1; // 當前波次
     public bool g_stage_is_begin = false;
     public bool g_stage_is_end = false;
-    private Player g_player;
+    public PlayerSingle g_player;
     // Start is called before the first frame update
     void Start()
     {
-        g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerSingle>();
         level = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // if(g_player == null){
+        //     g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerSingle>();
+        //     return;
+        // }
         if(!g_stage_is_begin && g_left_door.IsClose()){
             g_stage_is_begin = true;
             level = 1;
@@ -39,8 +43,6 @@ public class Dungeon : MonoBehaviour
         else if(g_player.transform.position.x >= 1.6f+transform.GetChild(1).transform.position.x){
             if(g_next_dungeon.Length != 0)
                 Instantiate(g_next_dungeon[Random.Range(0, g_next_dungeon.Length-1)], new Vector3(transform.position.x+8+(transform.GetChild(1).transform.position.x-transform.GetChild(0).transform.position.x)/2, transform.position.y, 0), new Quaternion(0, 0, 0, 0));
-            else
-                Debug.Log("GameFinishhhhhhhhhhhhhh");
             Destroy(gameObject);
         }
     }

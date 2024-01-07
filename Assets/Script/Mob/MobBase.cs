@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MobBase : MonoBehaviour
 {
-    protected Player g_player;
+    protected PlayerSingle g_player;
     protected Rigidbody2D g_rigidbody;
     protected Kinematic g_self_kinematic;
     private ParticleSystem g_death_particle;
@@ -12,7 +12,7 @@ public class MobBase : MonoBehaviour
     public float g_max_health;
     public float g_health;
     protected void VariableInit(float max_health = 1.0f, float health = 1.0f){
-        g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        g_player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerSingle>();
         g_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
         g_max_health = max_health;

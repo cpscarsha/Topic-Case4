@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine;
-using Unity.Netcode.Components;
-using Unity.Netcode;
 using Cinemachine;
 
-public class Player : NetworkBehaviour
+public class PlayerSingle : MonoBehaviour
 {
     public enum PlayerInput{
         LEFT,
@@ -52,10 +50,7 @@ public class Player : NetworkBehaviour
         g_max_health = 100;
         g_health = 100;
 
-        if (IsOwner)
-        {
-            GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = transform;
-        }
+        GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = transform;
         // GetComponent<NetworkAnimator>().Animator = GetComponent<Animator>();
         // g_death_particle = GetComponent<ParticleSystem>();
         // g_self_light = GetComponent<Light2D>();
@@ -64,7 +59,6 @@ public class Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) return;
         if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
             t_time = Time.time;
             if(a_is_sweeping && IsCooldownFinish()){

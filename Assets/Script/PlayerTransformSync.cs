@@ -9,7 +9,7 @@ public class PlayerTransformSync : NetworkBehaviour
     private NetworkVariable<Vector2> _syncVelocity = new();
 
     private Kinematic g_kinematic;
-    void Start(){
+    private void Start(){
         g_kinematic = GetComponent<Kinematic>();
     }
 
@@ -53,9 +53,9 @@ public class PlayerTransformSync : NetworkBehaviour
     }
 
     [ServerRpc]
-    // private void UploadTransformServerRpc(Vector3 position, Quaternion rotation, Vector3 scale)
     private void UploadTransformServerRpc(Vector3 position, Quaternion rotation, Vector3 scale, Vector2 velocity)
     {
+        // if(Vector3.Distance(_syncPos.Value, position) > 0.16f || _syncVelocity.Value == Vector2.zero)
         _syncPos.Value = position;
         _syncRota.Value = rotation;
         _syncScale.Value = scale;
