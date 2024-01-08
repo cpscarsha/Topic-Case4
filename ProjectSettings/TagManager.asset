@@ -8,6 +8,7 @@ TagManager:
   - Background
   - Ball
   - Ground
+  - Obstacle
   layers:
   - Default
   - TransparentFX

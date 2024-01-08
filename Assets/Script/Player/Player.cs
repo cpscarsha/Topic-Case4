@@ -80,9 +80,14 @@ public class Player : NetworkBehaviour
                 if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
                     foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
                         try{
-                            if(i.collider.CompareTag("Mob"))
+                            // if(i.collider.CompareTag("Mob"))
+                            // {
+                            //     i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
+                            //     StartCooldown();
+                            // }
+                            if(i.collider.CompareTag("Ball"))
                             {
-                                i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
+                                i.collider.GetComponent<Ball>().Hit(Mathf.Atan2(i.collider.transform.position.y - transform.position.y, i.collider.transform.position.x - transform.position.x), 1.6f);
                                 StartCooldown();
                             }
                         }
