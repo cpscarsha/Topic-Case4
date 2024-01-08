@@ -39,6 +39,8 @@ public class Player : NetworkBehaviour
     public float g_attack_delay_remaining = 0;
     public GameObject g_main_idle;
     public float t_time;
+    public GameObject g_ball;
+    public Ball g_ball_object;
     // Start is called before the first frame update
     void Start()
     {
@@ -51,9 +53,13 @@ public class Player : NetworkBehaviour
         g_gameover = GameObject.Find("Gameover");
         g_max_health = 100;
         g_health = 100;
-
-        if (IsOwner)
-        {
+        transform.position = new Vector3(1, 0, 0);
+        if(IsServer){
+            g_ball_object = Instantiate(g_ball).GetComponent<Ball>();
+            g_ball_object.transform.position = new Vector3(-1, 1, 0);
+            transform.position = new Vector3(-1, 0, 0);
+        }
+        if(IsOwner){
             GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = transform;
         }
         // GetComponent<NetworkAnimator>().Animator = GetComponent<Animator>();
@@ -79,6 +85,18 @@ public class Player : NetworkBehaviour
                         }
                         catch{}
                     }
+                }
+            }
+
+            if(g_self_kinematic.HasCollision(0.05f)){
+                foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
+                    try{
+                        if(i.collider.CompareTag("Ball")){
+                             g_ball_object.Hit(Mathf.PI/4 + (GetDirect()?0:Mathf.PI/2), 1.6f);
+                            // g_ball_object.Hit(Mathf.Atan2(g_ball_object.transform.position.y - transform.position.y, g_ball_object.transform.position.x - transform.position.x), 1.3f);
+                        }
+                    }
+                    catch{}
                 }
             }
             // Debug.Log(g_self_animator.GetBool("isDodge"));

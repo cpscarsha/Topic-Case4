@@ -37,8 +37,8 @@ public class MainIdleSystem : MonoBehaviour
                 Instantiate(g_single_player_dungeon_perfab).transform.position = new Vector3(5, 0, 0);
                 g_dungeon_is_init = true;
             }
-            if(g_camera.m_Lens.OrthographicSize < 2.35f){
-                g_camera.m_Lens.OrthographicSize += 2.35f*Time.deltaTime*(1*(0.1f+Mathf.Min(Mathf.Abs(g_camera.m_Lens.OrthographicSize - 0f),Mathf.Abs(g_camera.m_Lens.OrthographicSize - 2.35f)))/1.325f);
+            if(g_camera.m_Lens.OrthographicSize < 1.5f){
+                g_camera.m_Lens.OrthographicSize += 1.5f*Time.deltaTime*(1*(0.1f+Mathf.Min(Mathf.Abs(g_camera.m_Lens.OrthographicSize - 0f),Mathf.Abs(g_camera.m_Lens.OrthographicSize - 2.35f)))/1.325f);
             }
             if(g_camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.y < 0.63){
                 g_camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.y += 0.63f*Time.deltaTime*(1*(0.1f+Mathf.Min(Mathf.Abs(g_camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.y - 0f),Mathf.Abs(g_camera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset.y - 0.63f)))/0.315f);

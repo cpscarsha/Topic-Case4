@@ -72,6 +72,7 @@ MonoBehaviour:
   g_attack_delay_remaining: 0
   g_main_idle: {fileID: 0}
   t_time: 0
+  g_ball: {fileID: 440893007648307091, guid: 4458bff385027b94195b818bb1cc6f61, type: 3}
 --- !u!114 &7986192862643371641
 MonoBehaviour:
   m_ObjectHideFlags: 0

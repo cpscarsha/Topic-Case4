@@ -74,6 +74,7 @@ public class Kinematic : MonoBehaviour
     // }
     
     public bool CheckCollisionIn(Vector2 direction, float distance){
+        try{
         g_collision_result = new RaycastHit2D[5];
         int collision_num = g_self_collider.Cast(direction, g_collision_result, distance);
         RaycastHit2D[] temp = g_collision_result;
@@ -87,6 +88,8 @@ public class Kinematic : MonoBehaviour
             }
         }
         return collision_num > 0;
+        }
+        catch{return false;}
     }
     public bool HasCollision(float distance){
         if(CheckCollisionIn(Vector2.up, distance))return true;
