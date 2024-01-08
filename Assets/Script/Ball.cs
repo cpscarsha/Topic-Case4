@@ -24,7 +24,7 @@ public class Ball : NetworkBehaviour
             foreach(RaycastHit2D i in g_kinematic.g_collision_result){
                 try{
                     if(i.collider.CompareTag("Player")){
-                        Hit(Mathf.PI/4 + (i.collider.GetComponent<Player>().GetDirect()?0:Mathf.PI/2), 1.6f);
+                        Hit(Mathf.PI/4 + (i.collider.transform.position.x<0?0:Mathf.PI/2), 1.6f);
                         // g_ball_object.Hit(Mathf.Atan2(g_ball_object.transform.position.y - transform.position.y, g_ball_object.transform.position.x - transform.position.x), 1.3f);
                     }
                     if(i.collider.CompareTag("Ground")){
