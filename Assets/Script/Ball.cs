@@ -20,7 +20,7 @@ public class Ball : NetworkBehaviour
     {
         if(g_last_position == transform.position)g_stop_time+=1;
         else g_stop_time = 0;
-        if(g_stop_time > 1000){
+        if(g_stop_time > 10){
             Reset();
             g_stop_time = 0;
         }
