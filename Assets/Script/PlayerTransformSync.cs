@@ -31,7 +31,7 @@ public class PlayerTransformSync : NetworkBehaviour
 
     private void SyncTransform()
     {
-        if(_syncVelocity.Value == Vector2.zero)transform.position = _syncPos.Value;
+        transform.position = _syncPos.Value;
         transform.rotation = _syncRota.Value;
         transform.localScale = _syncScale.Value;
         g_kinematic.velocity = _syncVelocity.Value;
