@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerTransformSync : NetworkBehaviour
+public class ObjectSync : NetworkBehaviour
 {
     private NetworkVariable<Vector3> _syncPos = new();
     private NetworkVariable<Quaternion> _syncRota = new();
@@ -15,7 +15,7 @@ public class PlayerTransformSync : NetworkBehaviour
 
     private void Update()
     {
-        if (IsLocalPlayer)
+        if (IsServer)
         {
             UploadTransform();
         }
@@ -23,13 +23,13 @@ public class PlayerTransformSync : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsLocalPlayer)
+        if (!IsServer)
         {
             SyncTransform();
         }
     }
 
-    private void SyncTransform()
+    public void SyncTransform()
     {
         if(_syncVelocity.Value == Vector2.zero)transform.position = _syncPos.Value;
         transform.rotation = _syncRota.Value;
@@ -37,7 +37,7 @@ public class PlayerTransformSync : NetworkBehaviour
         g_kinematic.velocity = _syncVelocity.Value;
     }
 
-    private void UploadTransform()
+    public void UploadTransform()
     {
         if (IsServer)
         {
@@ -46,19 +46,5 @@ public class PlayerTransformSync : NetworkBehaviour
             _syncScale.Value = transform.localScale;
             _syncVelocity.Value = g_kinematic.velocity;
         }
-        else
-        {
-            UploadTransformServerRpc(transform.position, transform.rotation, transform.localScale, g_kinematic.velocity);
-        }
-    }
-
-    [ServerRpc]
-    private void UploadTransformServerRpc(Vector3 position, Quaternion rotation, Vector3 scale, Vector2 velocity)
-    {
-        // if(Vector3.Distance(_syncPos.Value, position) > 0.16f || _syncVelocity.Value == Vector2.zero)
-        _syncPos.Value = position;
-        _syncRota.Value = rotation;
-        _syncScale.Value = scale;
-        _syncVelocity.Value = velocity;
     }
 }

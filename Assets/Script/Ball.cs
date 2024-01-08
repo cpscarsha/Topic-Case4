@@ -18,17 +18,15 @@ public class Ball : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!IsServer)return;
         if(g_last_position == transform.position)g_stop_time+=1;
         else g_stop_time = 0;
-        if(g_stop_time > 10){
+        if(g_stop_time > 50){
             Reset();
             g_stop_time = 0;
         }
         // Debug.Log("afadf"+GetComponent<Kinematic>());
-        if(g_kinematic.CheckCollisionIn(Vector2.down, 0.01f)){
-            g_kinematic.velocity.x *= 0.2f;
-        }
-        if(g_kinematic.HasCollision(0.05f)){
+        if(g_kinematic.HasCollision(0.025f)){
             foreach(RaycastHit2D i in g_kinematic.g_collision_result){
                 try{
                     if(i.collider.CompareTag("Obstacle")){
@@ -49,6 +47,7 @@ public class Ball : NetworkBehaviour
                             if(players[1].GetComponent<Player>().g_is_host)transform.position = players[0].transform.position + new Vector3(0, 1, 0);
                             else transform.position = players[1].transform.position + new Vector3(0, 1, 0);
                         }
+                        GetComponent<ObjectSync>().UploadTransform();
                         g_kinematic.velocity = Vector2.zero;
                     }
                 }
@@ -62,5 +61,6 @@ public class Ball : NetworkBehaviour
     }
     public void Hit(float direct, float force){
         g_kinematic.velocity = new Vector2(force*Mathf.Cos(direct), force*Mathf.Sin(direct));
+        GetComponent<ObjectSync>().UploadTransform();
     }
 }
