@@ -8,6 +8,7 @@ public class ObjectSync : NetworkBehaviour
     private NetworkVariable<Vector3> _syncScale = new();
     private NetworkVariable<Vector2> _syncVelocity = new();
 
+    public bool g_sync_position = false;
     private Kinematic g_kinematic;
     private void Start(){
         g_kinematic = GetComponent<Kinematic>();
@@ -31,7 +32,11 @@ public class ObjectSync : NetworkBehaviour
 
     public void SyncTransform()
     {
-        if(_syncVelocity.Value == Vector2.zero)transform.position = _syncPos.Value;
+        if(g_sync_position || _syncVelocity.Value == Vector2.zero || Vector3.Distance(transform.position, _syncPos.Value) > 0.2f){
+            Debug.Log("sync pos");
+            transform.position = _syncPos.Value;
+            g_sync_position = false;
+        }
         transform.rotation = _syncRota.Value;
         transform.localScale = _syncScale.Value;
         g_kinematic.velocity = _syncVelocity.Value;

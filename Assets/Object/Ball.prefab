@@ -170,7 +170,8 @@ MonoBehaviour:
   gravity: 1
   knockback_resistance: 0.1
   ground: -0.635
-  avoid_collision_tags: []
+  avoid_collision_tags:
+  - Pole
 --- !u!61 &-1495700457351317405
 BoxCollider2D:
   m_ObjectHideFlags: 0

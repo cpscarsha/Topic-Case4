@@ -115,7 +115,8 @@ public class Player : NetworkBehaviour
     private bool g_is_buffer_move = false;
     private bool g_is_right_touch = false;
     void Click(){ // 點擊螢幕時觸發
-        if(!g_self_animator.GetBool("isDodge")){
+        GetComponent<PlayerTransformSync>().g_sync_position = true;
+        if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
             // g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
             // g_self_animator.SetBool("isWalk", false);
             // g_self_animator.SetBool("isDodge", false);
@@ -126,7 +127,7 @@ public class Player : NetworkBehaviour
         }
     }
     void TouchEnd(){
-        if(g_self_animator.GetBool("isWalk")){
+        if(!g_is_right_touch && g_self_animator.GetBool("isWalk")){
             g_self_animator.SetBool("isWalk", false);
             g_self_kinematic.velocity.x = 0;
         }

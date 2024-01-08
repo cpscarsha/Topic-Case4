@@ -9,6 +9,7 @@ TagManager:
   - Ball
   - Ground
   - Obstacle
+  - Pole
   layers:
   - Default
   - TransparentFX

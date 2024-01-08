@@ -9,6 +9,7 @@ public class PlayerTransformSync : NetworkBehaviour
     private NetworkVariable<Vector2> _syncVelocity = new();
 
     private Kinematic g_kinematic;
+    public bool g_sync_position = false;
     private void Start(){
         g_kinematic = GetComponent<Kinematic>();
     }
@@ -31,7 +32,10 @@ public class PlayerTransformSync : NetworkBehaviour
 
     private void SyncTransform()
     {
-        if(_syncVelocity.Value == Vector2.zero)transform.position = _syncPos.Value;
+        if(g_sync_position || _syncVelocity.Value == Vector2.zero){
+            transform.position = _syncPos.Value;
+            g_sync_position = false;
+        }
         transform.rotation = _syncRota.Value;
         transform.localScale = _syncScale.Value;
         g_kinematic.velocity = _syncVelocity.Value;
