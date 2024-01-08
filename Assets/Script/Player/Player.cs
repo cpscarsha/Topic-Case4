@@ -41,6 +41,7 @@ public class Player : NetworkBehaviour
     public float t_time;
     public GameObject g_ball;
     public Ball g_ball_object;
+    public bool g_is_host = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -54,12 +55,14 @@ public class Player : NetworkBehaviour
         g_max_health = 100;
         g_health = 100;
         transform.position = new Vector3(1, 0, 0);
-        if(IsServer){
-            g_ball_object = Instantiate(g_ball).GetComponent<Ball>();
-            g_ball_object.transform.position = new Vector3(-1, 1, 0);
-            transform.position = new Vector3(-1, 0, 0);
-        }
         if(IsOwner){
+            if(IsHost){
+                g_is_host = IsHost;
+                g_ball_object = Instantiate(g_ball).GetComponent<Ball>();
+                g_ball_object.GetComponent<NetworkObject>().Spawn();
+                g_ball_object.transform.position = new Vector3(-1, 1, 0);
+                transform.position = new Vector3(-1, 0, 0);
+            }
             GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = transform;
         }
         // GetComponent<NetworkAnimator>().Animator = GetComponent<Animator>();
@@ -88,17 +91,7 @@ public class Player : NetworkBehaviour
                 }
             }
 
-            if(g_self_kinematic.HasCollision(0.05f)){
-                foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
-                    try{
-                        if(i.collider.CompareTag("Ball")){
-                             g_ball_object.Hit(Mathf.PI/4 + (GetDirect()?0:Mathf.PI/2), 1.6f);
-                            // g_ball_object.Hit(Mathf.Atan2(g_ball_object.transform.position.y - transform.position.y, g_ball_object.transform.position.x - transform.position.x), 1.3f);
-                        }
-                    }
-                    catch{}
-                }
-            }
+            
             // Debug.Log(g_self_animator.GetBool("isDodge"));
             CheckSlide();
             ExcuteLight();
@@ -219,7 +212,7 @@ public class Player : NetworkBehaviour
         }
         transform.localScale = change_scale;
     }
-    private bool GetDirect(){ // 取得朝向，true時向右
+    public bool GetDirect(){ // 取得朝向，true時向右
         return transform.localScale.x > 0;
     }
 

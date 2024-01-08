@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Mob
   - Background
+  - Ball
+  - Ground
   layers:
   - Default
   - TransparentFX

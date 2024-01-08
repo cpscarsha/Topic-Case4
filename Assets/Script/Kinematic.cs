@@ -92,10 +92,16 @@ public class Kinematic : MonoBehaviour
         catch{return false;}
     }
     public bool HasCollision(float distance){
+        RaycastHit2D[] collision_result = new RaycastHit2D[20];
         if(CheckCollisionIn(Vector2.up, distance))return true;
+        for(int i=0;i<5;i++)collision_result[i] = g_collision_result[i];
         if(CheckCollisionIn(Vector2.down, distance))return true;
+        for(int i=0;i<5;i++)collision_result[i+5] = g_collision_result[i];
         if(CheckCollisionIn(Vector2.right, distance))return true;
+        for(int i=0;i<5;i++)collision_result[i+10] = g_collision_result[i];
         if(CheckCollisionIn(Vector2.left, distance))return true;
+        for(int i=0;i<5;i++)collision_result[i+15] = g_collision_result[i];
+        g_collision_result = collision_result;
         return false;
     }
     public bool IsStuck(){ // 被卡在牆裡

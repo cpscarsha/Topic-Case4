@@ -20,6 +20,29 @@ public class Ball : NetworkBehaviour
         if(g_kinematic.CheckCollisionIn(Vector2.down, 0.01f)){
             g_kinematic.velocity.x *= 0.2f;
         }
+        if(g_kinematic.HasCollision(0.05f)){
+            foreach(RaycastHit2D i in g_kinematic.g_collision_result){
+                try{
+                    if(i.collider.CompareTag("Player")){
+                        Hit(Mathf.PI/4 + (i.collider.GetComponent<Player>().GetDirect()?0:Mathf.PI/2), 1.6f);
+                        // g_ball_object.Hit(Mathf.Atan2(g_ball_object.transform.position.y - transform.position.y, g_ball_object.transform.position.x - transform.position.x), 1.3f);
+                    }
+                    if(i.collider.CompareTag("Ground")){
+                        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                        if(transform.position.x > 0){
+                            if(players[0].GetComponent<Player>().g_is_host)transform.position = players[0].transform.position + new Vector3(0, 1, 0);
+                            else transform.position = players[1].transform.position + new Vector3(0, 1, 0);
+                        }
+                        else{
+                            if(players[1].GetComponent<Player>().g_is_host)transform.position = players[0].transform.position + new Vector3(0, 1, 0);
+                            else transform.position = players[1].transform.position + new Vector3(0, 1, 0);
+                        }
+                        g_kinematic.velocity = Vector2.zero;
+                    }
+                }
+                catch{}
+            }
+        }
     }
 
     public void Hit(float direct, float force){
