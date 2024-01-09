@@ -11,13 +11,15 @@ public class MainIdleSystem : MonoBehaviour
     public CinemachineVirtualCamera g_camera;
     public GameObject g_single_player_perfab;
     public GameObject g_single_player_dungeon_perfab;
+    public GameObject g_gameover;
     private bool g_dungeon_is_init = false;
+    private float g_delay_start = 1;
     // public CinemachineVirtualCamera g_virtual_camera;
     // Start is called before the first frame update
     void Start()
     {
         g_camera.m_Lens.OrthographicSize = 0.35f;
-        
+        g_delay_start = Time.time + 1;
     }
 
     // Update is called once per frame
@@ -27,7 +29,7 @@ public class MainIdleSystem : MonoBehaviour
         Random.seed = (int)Time.time*1000000;
         Debug.Log("connect:"+GameManager.g_is_connect);
         Debug.Log("start:"+g_game_start);
-        if(GameManager.g_is_connect && Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended){
+        if(Time.time > g_delay_start && GameManager.g_is_connect && Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended){
             g_game_start = true;
             // g_camera.Follow = GameObject.FindWithTag("Player").transform;
             // g_camera.m_Lens.OrthographicSize = 2.35f;

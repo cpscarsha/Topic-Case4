@@ -46,10 +46,10 @@ public class PlayerSingle : MonoBehaviour
         // g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
         g_main_idle = GameObject.Find("Main Idle System");
-        g_gameover = GameObject.Find("Gameover");
+        g_gameover = g_main_idle.GetComponent<MainIdleSystem>().g_gameover;
         g_max_health = 100;
         g_health = 100;
-
+        Screen.orientation = ScreenOrientation.Portrait;
         GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = transform;
         // GetComponent<NetworkAnimator>().Animator = GetComponent<Animator>();
         // g_death_particle = GetComponent<ParticleSystem>();
@@ -74,6 +74,11 @@ public class PlayerSingle : MonoBehaviour
                         catch{}
                     }
                 }
+            }
+
+            if(g_self_kinematic.IsStuck()){
+                transform.position += new Vector3(0, 0.005f, 0); 
+                Debug.Log("IsStuck");
             }
             // Debug.Log(g_self_animator.GetBool("isDodge"));
             CheckSlide();

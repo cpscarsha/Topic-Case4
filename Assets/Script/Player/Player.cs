@@ -55,11 +55,12 @@ public class Player : NetworkBehaviour
         // g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
         g_main_idle = GameObject.Find("Main Idle System");
-        g_gameover = GameObject.Find("Gameover");
+        g_gameover = g_main_idle.GetComponent<MainIdleSystem>().g_gameover;
         g_max_health = 100;
         g_health = 100;
         transform.position = new Vector3(1, 0, 0);
         if(IsOwner){
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
             if(IsHost){
                 g_is_host = IsHost;
                 g_ball_object = Instantiate(g_ball).GetComponent<Ball>();
@@ -416,6 +417,14 @@ public class Player : NetworkBehaviour
                     ShortSlideLeft();
                 }
             }
+        }
+        if(!has_right){
+            g_is_right_touch = true;
+            TouchEnd();
+        }     
+        if(!has_left){
+            g_is_right_touch = false;
+            TouchEnd();
         }     
     }
     
