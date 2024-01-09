@@ -14,16 +14,17 @@ public class MainIdleSystem : MonoBehaviour
     private bool g_dungeon_is_init = false;
     // public CinemachineVirtualCamera g_virtual_camera;
     // Start is called before the first frame update
-    [System.Obsolete]
     void Start()
     {
         g_camera.m_Lens.OrthographicSize = 0.35f;
-        Random.seed = (int)Time.time*1000000;
+        
     }
 
     // Update is called once per frame
+    [System.Obsolete]
     void Update()
     {   
+        Random.seed = (int)Time.time*1000000;
         Debug.Log("connect:"+GameManager.g_is_connect);
         Debug.Log("start:"+g_game_start);
         if(GameManager.g_is_connect && Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended){

@@ -105,14 +105,6 @@ public class Kinematic : MonoBehaviour
         return false;
     }
     public bool IsStuck(){ // 被卡在牆裡
-        Collider2D[] result = new Collider2D[2];
-        ContactFilter2D filter = new();
-        filter.NoFilter();
-        try{
-            return g_self_collider.OverlapCollider(filter, result) > 0;
-        }
-        catch{
-            return true;
-        }
+        return CheckCollisionIn(Vector2.down, 0.005f) && CheckCollisionIn(Vector2.up, 0.005f) && CheckCollisionIn(Vector2.right, 0.005f) && CheckCollisionIn(Vector2.left, 0.005f);
     }
 }

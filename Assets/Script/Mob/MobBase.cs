@@ -40,9 +40,9 @@ public class MobBase : MonoBehaviour
                 try{
                     if(i.collider.tag == "Player"){
                         i.collider.GetComponent<Kinematic>().knockback = new Vector2((GetDirect()?1:-1)*knockback, 0);
-                        i.collider.GetComponent<Player>().g_health -= damage;
-                        if(i.collider.GetComponent<Player>().g_health <= 0.001f){
-                            i.collider.GetComponent<Player>().Death();
+                        i.collider.GetComponent<PlayerSingle>().g_health -= damage;
+                        if(i.collider.GetComponent<PlayerSingle>().g_health <= 0.001f){
+                            i.collider.GetComponent<PlayerSingle>().Death();
                         }
                         result = true;
                     }

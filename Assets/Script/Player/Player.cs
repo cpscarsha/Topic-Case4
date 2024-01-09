@@ -103,7 +103,10 @@ public class Player : NetworkBehaviour
                 }
             }
 
-            
+            if(g_self_kinematic.IsStuck()){
+                transform.position += new Vector3(0, 0.005f, 0); 
+                Debug.Log("IsStuck");
+            }
             // Debug.Log(g_self_animator.GetBool("isDodge"));
             CheckSlide();
             ExcuteLight();
@@ -342,7 +345,7 @@ public class Player : NetworkBehaviour
         bool has_right = false, has_left = false;
         foreach(Touch touch in Input.touches){
             if(has_right && has_left)break;
-            if(Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane)).x > 0){
+            if(Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane)).x > transform.position.x){
                 if(has_right)continue;
                 has_right = true;
                 g_is_right_touch = true;

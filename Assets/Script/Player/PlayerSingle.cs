@@ -199,7 +199,7 @@ public class PlayerSingle : MonoBehaviour
         return transform.localScale.x > 0;
     }
 
-    private bool g_is_attack_ending = false;
+    public bool g_is_attack_ending = false;
     private void ExcuteAnimator(){ // 處理動畫造成的變數變化
         // if(a_attack_end){
         //     g_self_animator.SetBool("isAttack", false); // 關閉攻擊動畫
