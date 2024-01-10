@@ -81,33 +81,34 @@ public class Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!IsOwner)return;
-        if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
-            t_time = Time.time;
-            if(a_is_sweeping && IsCooldownFinish()){
-                if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
-                    foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
-                        try{
-                            // if(i.collider.CompareTag("Mob"))
-                            // {
-                            //     i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
-                            //     StartCooldown();
-                            // }
-                            if(i.collider.CompareTag("Ball"))
-                            {
-                                i.collider.GetComponent<Ball>().Hit(Mathf.Atan2(i.collider.transform.position.y - transform.position.y, i.collider.transform.position.x - transform.position.x), 2.4f);
-                                StartCooldown();
-                            }
+        t_time = Time.time;
+        if(a_is_sweeping && IsCooldownFinish()){
+            if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
+                foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
+                    try{
+                        // if(i.collider.CompareTag("Mob"))
+                        // {
+                        //     i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
+                        //     StartCooldown();
+                        // }
+                        if(i.collider.CompareTag("Ball"))
+                        {
+                            i.collider.GetComponent<Ball>().Hit(Mathf.Atan2(i.collider.transform.position.y - transform.position.y, i.collider.transform.position.x - transform.position.x), 2.4f);
+                            StartCooldown();
                         }
-                        catch{}
                     }
+                    catch{}
                 }
             }
+        }
 
-            if(g_self_kinematic.IsStuck()){
-                transform.position += new Vector3(0, 0.005f, 0); 
-                Debug.Log("IsStuck");
-            }
+        if(g_self_kinematic.IsStuck()){
+            transform.position += new Vector3(0, 0.005f, 0); 
+            Debug.Log("IsStuck");
+        }
+        if(!IsOwner)return;
+        if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
+            
             // Debug.Log(g_self_animator.GetBool("isDodge"));
             CheckSlide();
             ExcuteLight();

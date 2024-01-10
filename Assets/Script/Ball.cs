@@ -58,7 +58,7 @@ public class Ball : NetworkBehaviour
                             if(players[1].GetComponent<Player>().g_is_host)transform.position = players[0].transform.position + new Vector3(0, 1, 0);
                             else transform.position = players[1].transform.position + new Vector3(0, 1, 0);
                         }
-                        GetComponent<ObjectSync>().g_sync_position = true;
+                        //GetComponent<ObjectSync>().g_sync_position = true;
                         g_kinematic.velocity = Vector2.zero;
                     }
                 }
@@ -72,6 +72,6 @@ public class Ball : NetworkBehaviour
     }
     public void Hit(float direct, float force){
         g_kinematic.velocity = new Vector2(force*Mathf.Cos(direct), force*Mathf.Sin(direct));
-        GetComponent<ObjectSync>().g_sync_position = true;
+        //GetComponent<ObjectSync>().g_sync_position = true;
     }
 }

@@ -3,64 +3,50 @@ using UnityEngine;
 
 public class ObjectSync : NetworkBehaviour
 {
-    private NetworkVariable<Vector3> _syncPos = new();
-    private NetworkVariable<Quaternion> _syncRota = new();
-    private NetworkVariable<Vector3> _syncScale = new();
-    private NetworkVariable<Vector2> _syncVelocity = new();
-
-    public bool g_sync_position = false;
+    private Vector2 _syncVelocity;
+    private Vector3 _syncPosition;
+    
     private Kinematic g_kinematic;
+    private NetworkTimer g_timer;
+    private Vector3 g_delay_position;
+    private Vector3 g_delay_velocity;
+
+    public bool g_start_sync = false;
     private void Start(){
+        g_timer = gameObject.AddComponent<NetworkTimer>();
         g_kinematic = GetComponent<Kinematic>();
     }
 
-    private void Update()
-    {
-        if (IsServer)
-        {
-            UploadTransform();
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        if (!IsServer)
-        {
+    private void Update(){
+        if(!IsServer){
             SyncTransform();
         }
     }
-
-    public void SyncPositionTrigger(){
-        
+    private void FixedUpdate()
+    {
+        if(!IsServer){
+            if(g_timer.ShouldTick()){
+                g_delay_position = transform.position;
+                g_delay_velocity = g_kinematic.velocity;
+            }
+        }
+        else{
+            UploadOwnerTransformClientRpc(transform.position, g_kinematic.velocity);
+        }
     }
 
-    public void SyncTransform()
-    {
-        if(g_sync_position || _syncVelocity.Value == Vector2.zero || Vector3.Distance(transform.position, _syncPos.Value) > 0.2f){
-            Debug.Log("sync pos");
-            transform.position = _syncPos.Value;
-            g_sync_position = false;
+    private void SyncTransform(){
+        if(Vector3.Distance(_syncPosition, g_delay_position) >= 0.5f || Vector3.Distance(_syncVelocity, g_delay_velocity) >= 0.5f){
+            transform.position = _syncPosition;
+            g_kinematic.velocity = _syncVelocity;
         }
-        transform.rotation = _syncRota.Value;
-        transform.localScale = _syncScale.Value;
-        
-        // if(g_sync_position || _syncVelocity.Value == Vector2.zero){
-        //     transform.position = _syncPos.Value;
-        //     g_sync_position = false;
-        // }
-        // transform.rotation = _syncRota.Value;
-        // transform.localScale = _syncScale.Value;
-        // g_kinematic.velocity = _syncVelocity.Value;
+        Vector3 new_scale = transform.localScale;
+        transform.localScale = new_scale;
     }
 
-    public void UploadTransform()
-    {
-        if (IsServer)
-        {
-            _syncPos.Value = transform.position;
-            _syncRota.Value = transform.rotation;
-            _syncScale.Value = transform.localScale;
-            _syncVelocity.Value = g_kinematic.velocity;
-        }
+    [ClientRpc]
+    private void UploadOwnerTransformClientRpc(Vector3 position, Vector2 velocity){ // 上傳資料至客戶端 
+        _syncPosition = position;
+        _syncVelocity = velocity;
     }
 }
