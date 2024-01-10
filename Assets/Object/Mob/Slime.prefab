@@ -178,6 +178,7 @@ MonoBehaviour:
   g_health: 0
   a_is_jump: 0
   g_attack_cooldown: 0.2
+  g_move_delay_time: 0
 --- !u!114 &1378806513808619254
 MonoBehaviour:
   m_ObjectHideFlags: 0

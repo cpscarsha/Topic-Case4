@@ -102,10 +102,10 @@ public class Player : NetworkBehaviour
             }
         }
 
-        if(g_self_kinematic.IsStuck()){
-            transform.position += new Vector3(0, 0.005f, 0); 
-            Debug.Log("IsStuck");
-        }
+        // if(g_self_kinematic.IsStuck()){
+        //     transform.position += new Vector3(0, 0.005f, 0); 
+        //     Debug.Log("IsStuck");
+        // }
         if(!IsOwner)return;
         if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
             

@@ -32,12 +32,13 @@ public class Ball : NetworkBehaviour
                     if(i.collider.CompareTag("Obstacle")){
                         Debug.Log("touch Obstacle");
                         g_kinematic.velocity *= new Vector2(1, -1); 
+                        g_kinematic.ResetGravity();
                     }
                 }
                 catch{}
             }
         }
-        else if(g_kinematic.HasCollision(0.05f)){
+        else if(g_kinematic.HasCollision(0.1f)){
             foreach(RaycastHit2D i in g_kinematic.g_collision_result){
                 try{
                     if(i.collider.CompareTag("Obstacle")){

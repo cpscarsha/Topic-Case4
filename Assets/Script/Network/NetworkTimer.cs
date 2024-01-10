@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NetworkTimer : MonoBehaviour
+public class NetworkTimer
 {
     private float timer;
     public float g_min_time_between_ticks{get;}
@@ -11,9 +11,9 @@ public class NetworkTimer : MonoBehaviour
     public NetworkTimer(float server_tick_rate){
         g_min_time_between_ticks = 1f / server_tick_rate;
     }
-    private void Update()
+    public void Update(float deltaTime)
     {
-        timer += Time.deltaTime;
+        timer += deltaTime;
     }
 
     public bool ShouldTick(){

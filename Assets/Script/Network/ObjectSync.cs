@@ -13,11 +13,12 @@ public class ObjectSync : NetworkBehaviour
 
     public bool g_start_sync = false;
     private void Start(){
-        g_timer = gameObject.AddComponent<NetworkTimer>();
+        g_timer = new NetworkTimer(30);
         g_kinematic = GetComponent<Kinematic>();
     }
 
     private void Update(){
+        g_timer.Update(Time.deltaTime);
         if(!IsServer){
             SyncTransform();
         }

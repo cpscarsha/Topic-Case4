@@ -69,7 +69,7 @@ MonoBehaviour:
   g_max_health: 0
   g_attack: 1
   g_attack_cooldown: 0.2
-  g_attack_delay: 0.1
+  g_attack_delay: 5
   g_attack_delay_remaining: 0
   g_main_idle: {fileID: 0}
   t_time: 0
@@ -5177,7 +5177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bfd4a378efd9c246a7cab7faf49beee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g_sync_position: 0
   g_start_sync: 0
 --- !u!114 &8944796625453546565
 MonoBehaviour:

@@ -20,7 +20,7 @@ public class Kinematic : MonoBehaviour
         g_self_collider = GetComponent<Collider2D>();
         g_self_rigidbody = GetComponent<Rigidbody2D>();
     }
-
+    private float now_gravity = 0;   
     void FixedUpdate(){
         // try{
         //     if(!GetComponent<Player>().IsServer)return;
@@ -36,21 +36,29 @@ public class Kinematic : MonoBehaviour
         // if(!CheckCollisionIn(Vector2.down, gravity*Time.fixedDeltaTime+0.005f)){
         //     g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x, g_self_rigidbody.position.y-gravity*Time.fixedDeltaTime);
         // }
-        velocity.y -= gravity*Time.fixedDeltaTime;
-        
+        // velocity.y -= gravity*Time.fixedDeltaTime;
+
+        now_gravity -= gravity*Time.fixedDeltaTime;
         if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
         else knockback.x = 0;
         if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
         else knockback.y = 0;
         
-        if((velocity.y + knockback.y < 0 && CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y)*Time.fixedDeltaTime+0.005f)) ^ (velocity.y + knockback.y > 0 && CheckCollisionIn(Vector2.up, (velocity.y + knockback.y)*Time.fixedDeltaTime+0.005f))){
+        if((velocity.y + knockback.y) + now_gravity < 0 && CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y+ now_gravity )*Time.fixedDeltaTime + 0.005f)){
             velocity.y = 0;
             knockback.y = 0;
+            now_gravity = 0;
         }
-        if((velocity.y + knockback.y)*Time.fixedDeltaTime + g_self_rigidbody.position.y + GetComponent<BoxCollider2D>().size.y/2.0f + g_self_collider.offset.y <= ground){
+        if((velocity.y + knockback.y) + now_gravity > 0 && CheckCollisionIn(Vector2.up, (velocity.y + knockback.y+ now_gravity )*Time.fixedDeltaTime + 0.005f)){
             velocity.y = 0;
             knockback.y = 0;
+            now_gravity = 0;
         }
+        // if((velocity.y + knockback.y - gravity)*Time.fixedDeltaTime + g_self_rigidbody.position.y + GetComponent<BoxCollider2D>().size.y/2.0f + g_self_collider.offset.y <= ground){
+        //     velocity.y = 0;
+        //     knockback.y = 0;
+        //     now_gravity = 0;
+        // }
 
         if((velocity.x + knockback.x > 0 && CheckCollisionIn(Vector2.right, (velocity.x + knockback.x)*Time.fixedDeltaTime+0.005f)) ^ (velocity.x + knockback.x < 0 && CheckCollisionIn(Vector2.left, -(velocity.x + knockback.x)*Time.fixedDeltaTime+0.005f))){
             velocity.x = 0;
@@ -61,8 +69,9 @@ public class Kinematic : MonoBehaviour
         //     velocity.y = 0;
         // }
 
+        Debug.Log("g:"+now_gravity);
 
-        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y)*Time.fixedDeltaTime);
+        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Time.fixedDeltaTime);
         // if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
         //     Destroy(GetComponent<MobBase>().gameObject);
         // }
@@ -76,7 +85,9 @@ public class Kinematic : MonoBehaviour
     // public void GetYForce(float force){
     //     velocity.y += force;
     // }
-    
+    public void ResetGravity(){
+        now_gravity = 0;
+    }
     public bool CheckCollisionIn(Vector2 direction, float distance){
         try{
         g_collision_result = new RaycastHit2D[5];

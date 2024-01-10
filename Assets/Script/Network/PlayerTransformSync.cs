@@ -1,3 +1,4 @@
+using System.Threading;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -17,13 +18,14 @@ public class PlayerTransformSync : NetworkBehaviour
 
     public bool g_start_sync = false;
     private void Start(){
-        g_timer = gameObject.AddComponent<NetworkTimer>();
+        g_timer = new NetworkTimer(30);
         g_kinematic = GetComponent<Kinematic>();
     }
 
     // private NetworkTimers g_timer(60);
     // private Queue<Vector3> g_position_queue;
     private void Update(){
+        g_timer.Update(Time.deltaTime);
         if(!IsServer){
             SyncTransform();
         }

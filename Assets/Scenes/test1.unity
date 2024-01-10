@@ -251,7 +251,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.2, y: 1.6}
+  m_Size: {x: 20, y: 1.6}
   m_EdgeRadius: 0
 --- !u!1 &98149173
 GameObject:
@@ -2002,7 +2002,7 @@ GameObject:
   - component: {fileID: 1061149845}
   m_Layer: 0
   m_Name: Square
-  m_TagString: Untagged
+  m_TagString: Obstacle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
