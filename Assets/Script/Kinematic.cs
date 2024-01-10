@@ -22,17 +22,10 @@ public class Kinematic : MonoBehaviour
     }
 
     void FixedUpdate(){
-<<<<<<< Updated upstream
-        try{
-            if(!GetComponent<Player>().IsServer)return;
-        }
-        catch{}
-=======
         // try{
         //     if(!GetComponent<Player>().IsServer)return;
         // }
         // catch{}
->>>>>>> Stashed changes
         // if(CheckCollisionIn(Vector2.right, now_speed*Time.fixedDeltaTime+0.005f) && now_speed > 0){
         //     velocity = Vector2.zero;
         // }

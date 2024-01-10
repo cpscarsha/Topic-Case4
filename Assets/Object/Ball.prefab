@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 3483635819445186342}
   - component: {fileID: -1495700457351317405}
   - component: {fileID: 4984858688026003499}
-  - component: {fileID: 1085424116368654259}
   - component: {fileID: -7791074260951644208}
   m_Layer: 0
   m_Name: Ball
@@ -224,7 +223,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 440893007648307091}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e96cb6065543e43c4a752faaa1468eb1, type: 3}
   m_Name: 
@@ -247,19 +246,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &1085424116368654259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 440893007648307091}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: babcb29d54f90174a9692c6a7a848946, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g_sync_position: 0
 --- !u!114 &-7791074260951644208
 MonoBehaviour:
   m_ObjectHideFlags: 0

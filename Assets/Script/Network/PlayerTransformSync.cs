@@ -8,31 +8,37 @@ public class PlayerTransformSync : NetworkBehaviour
     // private NetworkVariable<bool> _startSync = new();
     private float _syncScaleX;
     private Vector2 _syncVelocity;
+    private Vector3 _syncPosition;
     
     private Kinematic g_kinematic;
+    private NetworkTimer g_timer;
+    private Vector3 g_delay_position;
+    private Vector3 g_delay_velocity;
+
     public bool g_start_sync = false;
     private void Start(){
+        g_timer = gameObject.AddComponent<NetworkTimer>();
         g_kinematic = GetComponent<Kinematic>();
     }
 
     // private NetworkTimers g_timer(60);
     // private Queue<Vector3> g_position_queue;
     private void Update(){
-        if(IsLocalPlayer){
-            SyncOwnerTransformClientRpc(transform.position, transform.localScale.x);
-            
+        if(!IsServer){
+            SyncTransform();
         }
-        if(IsOwner && !IsServer){
-            SyncLocalTransformClientRpc(g_kinematic.velocity, transform.position, transform.localScale.x);
-        }
+        // if(IsLocalPlayer && !IsServer){
+        //     SyncLocalTransformClientRpc(g_kinematic.velocity, transform.position, transform.localScale.x);
+        // }
     }
     private void FixedUpdate()
     {
-        // if(IsLocalPlayer){
-        //     if(g_timer.ShouldTick()){
-        //         g_position_queue.Enqueue(PlayerTransformSync.position);
-        //     }
-        // }
+        if(!IsServer){
+            if(g_timer.ShouldTick()){
+                g_delay_position = transform.position;
+                g_delay_velocity = g_kinematic.velocity;
+            }
+        }
         if(IsServer){
             if(g_start_sync){ // 主機取得玩家速度
                 g_kinematic.velocity = _syncVelocity;
@@ -41,6 +47,7 @@ public class PlayerTransformSync : NetworkBehaviour
                 transform.localScale = new_scale;
                 g_start_sync = false;
             }
+            UploadOwnerTransformClientRpc(transform.position, g_kinematic.velocity, transform.localScale.x);
         }
     }
 
@@ -58,25 +65,22 @@ public class PlayerTransformSync : NetworkBehaviour
         }
     }
 
-    [ClientRpc]
-    private void SyncOwnerTransformClientRpc(Vector3 position, float scale_x){
-        if(Vector3.Distance(position, transform.position) >= 0.05f)transform.position = position;
-        Debug.Log(position + " / " +　transform.position);
+    private void SyncTransform(){
+        if(Vector3.Distance(_syncPosition, g_delay_position) >= 0.5f || Vector3.Distance(_syncVelocity, g_delay_velocity) >= 0.5f){
+            transform.position = _syncPosition;
+            g_kinematic.velocity = _syncVelocity;
+            Debug.Log(_syncPosition + "/" + g_delay_position);
+        }
         Vector3 new_scale = transform.localScale;
-        new_scale.x = scale_x;
+        new_scale.x = _syncScaleX;
         transform.localScale = new_scale;
     }
+
     [ClientRpc]
-    private void SyncLocalTransformClientRpc(Vector2 velocity, Vector3 position, float scale_x){
-        g_kinematic.velocity = velocity;
-        if(Vector3.Distance(position, transform.position) >= 0.05f){
-            transform.position = position;
-            
-        }
-        // Debug.Log(position + " / " +　transform.position);
-        Vector3 new_scale = transform.localScale;
-        new_scale.x = scale_x;
-        transform.localScale = new_scale;
+    private void UploadOwnerTransformClientRpc(Vector3 position, Vector2 velocity, float scale_x){ // 上傳資料至客戶端 
+        _syncPosition = position;
+        _syncScaleX = scale_x;
+        _syncVelocity = velocity;
     }
 
     [ServerRpc]
