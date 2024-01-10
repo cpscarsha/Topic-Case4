@@ -31,21 +31,30 @@ public class ObjectSync : NetworkBehaviour
     }
 
     public void SyncPositionTrigger(){
-        foreach(GameObject i in GameObject.FindGameObjectsWithTag("Ball")){
-            i.GetComponent<PlayerTransformSync>().g_sync_position = true;
-        }
+        
     }
 
     public void SyncTransform()
     {
+<<<<<<< Updated upstream:Assets/Script/PlayerTransformSync.cs
+        transform.position = _syncPos.Value;
+=======
         if(g_sync_position || _syncVelocity.Value == Vector2.zero || Vector3.Distance(transform.position, _syncPos.Value) > 0.2f){
             Debug.Log("sync pos");
             transform.position = _syncPos.Value;
             g_sync_position = false;
         }
         transform.rotation = _syncRota.Value;
+>>>>>>> Stashed changes:Assets/Script/Network/ObjectSync.cs
         transform.localScale = _syncScale.Value;
-        g_kinematic.velocity = _syncVelocity.Value;
+        
+        // if(g_sync_position || _syncVelocity.Value == Vector2.zero){
+        //     transform.position = _syncPos.Value;
+        //     g_sync_position = false;
+        // }
+        // transform.rotation = _syncRota.Value;
+        // transform.localScale = _syncScale.Value;
+        // g_kinematic.velocity = _syncVelocity.Value;
     }
 
     public void UploadTransform()
@@ -57,5 +66,23 @@ public class ObjectSync : NetworkBehaviour
             _syncScale.Value = transform.localScale;
             _syncVelocity.Value = g_kinematic.velocity;
         }
+<<<<<<< Updated upstream:Assets/Script/PlayerTransformSync.cs
+        // else
+        // {
+        //     UploadTransformServerRpc(transform.position, transform.rotation, transform.localScale, g_kinematic.velocity);
+        // }
     }
+
+    // [ServerRpc]
+    // private void UploadTransformServerRpc(Vector3 position, Quaternion rotation, Vector3 scale, Vector2 velocity)
+    // {
+    //     // if(Vector3.Distance(_syncPos.Value, position) > 0.16f || _syncVelocity.Value == Vector2.zero)
+    //     _syncPos.Value = position;
+    //     _syncRota.Value = rotation;
+    //     _syncScale.Value = scale;
+    //     _syncVelocity.Value = velocity;
+    // }
+=======
+    }
+>>>>>>> Stashed changes:Assets/Script/Network/ObjectSync.cs
 }

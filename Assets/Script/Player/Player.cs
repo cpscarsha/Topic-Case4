@@ -114,12 +114,21 @@ public class Player : NetworkBehaviour
             ExcuteAnimator();
         }
     }
+
+    public void SetVelocity(Vector3 velocity){
+        g_self_kinematic.velocity = velocity;
+        GetComponent<PlayerTransformSync>().StartSync();
+    }
+    public void SetVelocity(char x_y_z, float value){
+        if(x_y_z == 'x')g_self_kinematic.velocity.x = value;
+        else if(x_y_z == 'y')g_self_kinematic.velocity.y = value;
+        GetComponent<PlayerTransformSync>().StartSync();
+    }
     
     /*觸控觸發的函數*/
     private bool g_is_buffer_move = false;
     private bool g_is_right_touch = false;
     void Click(){ // 點擊螢幕時觸發
-        GetComponent<PlayerTransformSync>().SyncPositionTrigger();
         if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
             // g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
             // g_self_animator.SetBool("isWalk", false);
@@ -133,7 +142,7 @@ public class Player : NetworkBehaviour
     void TouchEnd(){
         if(!g_is_right_touch && g_self_animator.GetBool("isWalk")){
             g_self_animator.SetBool("isWalk", false);
-            g_self_kinematic.velocity.x = 0;
+            SetVelocity('x', 0);
         }
     }
     void SlideUp(){
@@ -149,7 +158,7 @@ public class Player : NetworkBehaviour
             g_self_animator.SetBool("isDodge", true);
             g_self_animator.SetBool("isWalk", false);
             g_self_animator.SetBool("isAttack", false);
-            g_self_kinematic.velocity.x = 2;
+            SetVelocity('x', 2);
             a_attack_end_level = 0;
             Debug.Log("c");
             g_self_animator.SetInteger("AttackLevel", 0);
@@ -161,7 +170,7 @@ public class Player : NetworkBehaviour
             g_self_animator.SetBool("isDodge", true);
             g_self_animator.SetBool("isWalk", false);
             g_self_animator.SetBool("isAttack", false);
-            g_self_kinematic.velocity.x = -2;
+            SetVelocity('x', -2);
             a_attack_end_level = 0;
             Debug.Log("d");
             g_self_animator.SetInteger("AttackLevel", 0);
@@ -179,25 +188,25 @@ public class Player : NetworkBehaviour
     void KeepSlideRight(){
         if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
             g_self_animator.SetBool("isWalk", true);
-            g_self_kinematic.velocity.x = 1.8f;
+            SetVelocity('x', 1.8f);
             SetDirect(true);
         }
     }
     void KeepSlideLeft(){
         if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
             g_self_animator.SetBool("isWalk", true);
-            g_self_kinematic.velocity.x = -1.8f;
+            SetVelocity('x', -1.8f);
             SetDirect(false);
         }
     }
     void ShortSlideUp(){
         if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
             if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
-                g_self_kinematic.velocity.y = 3;
+                SetVelocity('y', 3);
             }
             if(g_is_buffer_move){
                 g_is_buffer_move = false;
-                g_self_kinematic.velocity.x = 0;
+                SetVelocity('x', 0);
             }
         }
     }
@@ -205,19 +214,19 @@ public class Player : NetworkBehaviour
         if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
             if(g_is_buffer_move){
                 g_is_buffer_move = false;
-                g_self_kinematic.velocity.x = 0;
+                SetVelocity('x', 0);
             }
         }
     }
     void ShortSlideRight(){
         if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            g_self_kinematic.velocity.x = 1f;
+            SetVelocity('x', 1);
             g_is_buffer_move = true;
         }
     }
     void ShortSlideLeft(){
         if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            g_self_kinematic.velocity.x = -1f;
+            SetVelocity('x', -1);
             g_is_buffer_move = true;
         }
     }
@@ -226,13 +235,14 @@ public class Player : NetworkBehaviour
     
     private void SetDirect(bool is_right){ // 設定朝向，當 is_right 時朝右，否則朝左
         Vector3 change_scale = transform.localScale;
-        if(is_right && change_scale.x < 0){
-            change_scale.x = -change_scale.x;
+        if(is_right){
+            change_scale.x = 1;
         }
-        else if(!is_right && change_scale.x > 0){
-            change_scale.x = -change_scale.x;
+        else if(!is_right){
+            change_scale.x = -1;
         }
         transform.localScale = change_scale;
+        GetComponent<PlayerTransformSync>().StartSync();
     }
     public bool GetDirect(){ // 取得朝向，true時向右
         return transform.localScale.x > 0;
@@ -280,7 +290,7 @@ public class Player : NetworkBehaviour
         
         
         if(a_dodge_end){
-            g_self_kinematic.velocity.x = 0;
+            SetVelocity('x', 0);
             a_dodge_end = false;
             g_self_animator.SetBool("isDodge", false);
         }
