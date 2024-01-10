@@ -26,7 +26,18 @@ public class Ball : NetworkBehaviour
             g_stop_time = 0;
         }
         // Debug.Log("afadf"+GetComponent<Kinematic>());
-        if(g_kinematic.HasCollision(0.025f)){
+        if(g_kinematic.CheckCollisionIn(Vector2.up, 0.05f)){
+            foreach(RaycastHit2D i in g_kinematic.g_collision_result){
+                try{
+                    if(i.collider.CompareTag("Obstacle")){
+                        Debug.Log("touch Obstacle");
+                        g_kinematic.velocity *= new Vector2(1, -1); 
+                    }
+                }
+                catch{}
+            }
+        }
+        else if(g_kinematic.HasCollision(0.05f)){
             foreach(RaycastHit2D i in g_kinematic.g_collision_result){
                 try{
                     if(i.collider.CompareTag("Obstacle")){

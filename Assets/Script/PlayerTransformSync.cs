@@ -30,6 +30,12 @@ public class PlayerTransformSync : NetworkBehaviour
         }
     }
 
+    public void SyncPositionTrigger(){
+        foreach(GameObject i in GameObject.FindGameObjectsWithTag("Player")){
+            i.GetComponent<PlayerTransformSync>().g_sync_position = true;
+        }
+    }
+
     private void SyncTransform()
     {
         if(g_sync_position || _syncVelocity.Value == Vector2.zero){

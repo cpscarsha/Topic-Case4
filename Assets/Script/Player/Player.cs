@@ -81,7 +81,7 @@ public class Player : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!IsOwner) return;
+        if(!IsOwner)return;
         if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
             t_time = Time.time;
             if(a_is_sweeping && IsCooldownFinish()){
@@ -119,7 +119,7 @@ public class Player : NetworkBehaviour
     private bool g_is_buffer_move = false;
     private bool g_is_right_touch = false;
     void Click(){ // 點擊螢幕時觸發
-        GetComponent<PlayerTransformSync>().g_sync_position = true;
+        GetComponent<PlayerTransformSync>().SyncPositionTrigger();
         if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
             // g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
             // g_self_animator.SetBool("isWalk", false);

@@ -30,6 +30,8 @@ public class ObjectSync : NetworkBehaviour
         }
     }
 
+    
+
     public void SyncTransform()
     {
         if(g_sync_position || _syncVelocity.Value == Vector2.zero || Vector3.Distance(transform.position, _syncPos.Value) > 0.2f){

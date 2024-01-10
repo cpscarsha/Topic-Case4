@@ -167,7 +167,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   knockback: {x: 0, y: 0}
-  gravity: 1
+  gravity: 1.2
   knockback_resistance: 0.1
   ground: -0.635
   avoid_collision_tags:
@@ -259,6 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: babcb29d54f90174a9692c6a7a848946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  g_sync_position: 0
 --- !u!114 &-7791074260951644208
 MonoBehaviour:
   m_ObjectHideFlags: 0
