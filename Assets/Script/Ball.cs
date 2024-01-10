@@ -21,7 +21,7 @@ public class Ball : NetworkBehaviour
         if(!IsServer)return;
         if(g_last_position == transform.position)g_stop_time+=1;
         else g_stop_time = 0;
-        if(g_stop_time > 50){
+        if(g_stop_time > 100){
             Reset();
             g_stop_time = 0;
         }

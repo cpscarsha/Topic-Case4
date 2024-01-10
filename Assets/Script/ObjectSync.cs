@@ -30,7 +30,11 @@ public class ObjectSync : NetworkBehaviour
         }
     }
 
-    
+    public void SyncPositionTrigger(){
+        foreach(GameObject i in GameObject.FindGameObjectsWithTag("Ball")){
+            i.GetComponent<PlayerTransformSync>().g_sync_position = true;
+        }
+    }
 
     public void SyncTransform()
     {
