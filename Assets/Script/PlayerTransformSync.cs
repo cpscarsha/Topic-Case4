@@ -16,7 +16,7 @@ public class PlayerTransformSync : NetworkBehaviour
 
     private void Update()
     {
-        if (IsLocalPlayer)
+        if (IsServer)
         {
             UploadTransform();
         }
@@ -24,7 +24,7 @@ public class PlayerTransformSync : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsLocalPlayer)
+        if (!IsServer)
         {
             SyncTransform();
         }
@@ -38,13 +38,16 @@ public class PlayerTransformSync : NetworkBehaviour
 
     private void SyncTransform()
     {
-        if(g_sync_position || _syncVelocity.Value == Vector2.zero){
-            transform.position = _syncPos.Value;
-            g_sync_position = false;
-        }
-        transform.rotation = _syncRota.Value;
+        transform.position = _syncPos.Value;
         transform.localScale = _syncScale.Value;
-        g_kinematic.velocity = _syncVelocity.Value;
+        
+        // if(g_sync_position || _syncVelocity.Value == Vector2.zero){
+        //     transform.position = _syncPos.Value;
+        //     g_sync_position = false;
+        // }
+        // transform.rotation = _syncRota.Value;
+        // transform.localScale = _syncScale.Value;
+        // g_kinematic.velocity = _syncVelocity.Value;
     }
 
     private void UploadTransform()
@@ -56,19 +59,19 @@ public class PlayerTransformSync : NetworkBehaviour
             _syncScale.Value = transform.localScale;
             _syncVelocity.Value = g_kinematic.velocity;
         }
-        else
-        {
-            UploadTransformServerRpc(transform.position, transform.rotation, transform.localScale, g_kinematic.velocity);
-        }
+        // else
+        // {
+        //     UploadTransformServerRpc(transform.position, transform.rotation, transform.localScale, g_kinematic.velocity);
+        // }
     }
 
-    [ServerRpc]
-    private void UploadTransformServerRpc(Vector3 position, Quaternion rotation, Vector3 scale, Vector2 velocity)
-    {
-        // if(Vector3.Distance(_syncPos.Value, position) > 0.16f || _syncVelocity.Value == Vector2.zero)
-        _syncPos.Value = position;
-        _syncRota.Value = rotation;
-        _syncScale.Value = scale;
-        _syncVelocity.Value = velocity;
-    }
+    // [ServerRpc]
+    // private void UploadTransformServerRpc(Vector3 position, Quaternion rotation, Vector3 scale, Vector2 velocity)
+    // {
+    //     // if(Vector3.Distance(_syncPos.Value, position) > 0.16f || _syncVelocity.Value == Vector2.zero)
+    //     _syncPos.Value = position;
+    //     _syncRota.Value = rotation;
+    //     _syncScale.Value = scale;
+    //     _syncVelocity.Value = velocity;
+    // }
 }
