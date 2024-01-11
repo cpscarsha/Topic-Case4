@@ -4,8 +4,9 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor.Rendering;
 using UnityEngine;
+using Fusion;
 
-public class Kinematic : MonoBehaviour
+public class Kinematic : NetworkBehaviour
 {
     public Vector2 velocity;
     public Vector2 knockback;
@@ -21,46 +22,46 @@ public class Kinematic : MonoBehaviour
         g_self_rigidbody = GetComponent<Rigidbody2D>();
     }
     public float now_gravity = 0;
-    void FixedUpdate(){
+    public override void FixedUpdateNetwork(){
         // try{
         //     if(!GetComponent<Player>().IsServer)return;
         // }
         // catch{}
-        // if(CheckCollisionIn(Vector2.right, now_speed*Time.fixedDeltaTime+0.005f) && now_speed > 0){
+        // if(CheckCollisionIn(Vector2.right, now_speed*Runner.DeltaTime+0.005f) && now_speed > 0){
         //     velocity = Vector2.zero;
         // }
-        // else if(CheckCollisionIn(Vector2.left, -now_speed*Time.fixedDeltaTime+0.005f) && now_speed < 0){
+        // else if(CheckCollisionIn(Vector2.left, -now_speed*Runner.DeltaTime+0.005f) && now_speed < 0){
         //     velocity = Vector2.zero;
         // }
         
-        // if(!CheckCollisionIn(Vector2.down, gravity*Time.fixedDeltaTime+0.005f)){
-        //     g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x, g_self_rigidbody.position.y-gravity*Time.fixedDeltaTime);
+        // if(!CheckCollisionIn(Vector2.down, gravity*Runner.DeltaTime+0.005f)){
+        //     g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x, g_self_rigidbody.position.y-gravity*Runner.DeltaTime);
         // }
-        // velocity.y -= gravity*Time.fixedDeltaTime;
+        // velocity.y -= gravity*Runner.DeltaTime;
 
-        now_gravity -= gravity*Time.fixedDeltaTime;
-        if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
+        now_gravity -= gravity*Runner.DeltaTime;
+        if(Mathf.Abs(knockback.x) > 1)knockback.x += (knockback.x>0?-1:1)*knockback_resistance*Runner.DeltaTime;
         else knockback.x = 0;
-        if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Time.fixedDeltaTime;
+        if(Mathf.Abs(knockback.y) > 1)knockback.y += (knockback.y>0?-1:1)*knockback_resistance*Runner.DeltaTime;
         else knockback.y = 0;
         
-        if((velocity.y + knockback.y) + now_gravity < 0 && CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y+ now_gravity )*Time.fixedDeltaTime + 0.005f)){
+        if((velocity.y + knockback.y) + now_gravity < 0 && CheckCollisionIn(Vector2.down, -(velocity.y + knockback.y+ now_gravity )*Runner.DeltaTime + 0.005f)){
             velocity.y = 0;
             knockback.y = 0;
             now_gravity = 0;
         }
-        if((velocity.y + knockback.y) + now_gravity > 0 && CheckCollisionIn(Vector2.up, (velocity.y + knockback.y+ now_gravity )*Time.fixedDeltaTime + 0.005f)){
+        if((velocity.y + knockback.y) + now_gravity > 0 && CheckCollisionIn(Vector2.up, (velocity.y + knockback.y+ now_gravity )*Runner.DeltaTime + 0.005f)){
             velocity.y = 0;
             knockback.y = 0;
             now_gravity = 0;
         }
-        // if((velocity.y + knockback.y - gravity)*Time.fixedDeltaTime + g_self_rigidbody.position.y + GetComponent<BoxCollider2D>().size.y/2.0f + g_self_collider.offset.y <= ground){
+        // if((velocity.y + knockback.y - gravity)*Runner.DeltaTime + g_self_rigidbody.position.y + GetComponent<BoxCollider2D>().size.y/2.0f + g_self_collider.offset.y <= ground){
         //     velocity.y = 0;
         //     knockback.y = 0;
         //     now_gravity = 0;
         // }
 
-        if((velocity.x + knockback.x > 0 && CheckCollisionIn(Vector2.right, (velocity.x + knockback.x)*Time.fixedDeltaTime+0.005f)) ^ (velocity.x + knockback.x < 0 && CheckCollisionIn(Vector2.left, -(velocity.x + knockback.x)*Time.fixedDeltaTime+0.005f))){
+        if((velocity.x + knockback.x > 0 && CheckCollisionIn(Vector2.right, (velocity.x + knockback.x)*Runner.DeltaTime+0.005f)) ^ (velocity.x + knockback.x < 0 && CheckCollisionIn(Vector2.left, -(velocity.x + knockback.x)*Runner.DeltaTime+0.005f))){
             velocity.x = 0;
             knockback.x = 0;
         }
@@ -71,7 +72,7 @@ public class Kinematic : MonoBehaviour
 
         
 
-        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Time.fixedDeltaTime);
+        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Runner.DeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Runner.DeltaTime);
         // if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
         //     Destroy(GetComponent<MobBase>().gameObject);
         // }
