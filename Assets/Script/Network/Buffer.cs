@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CircularBuffer<T>{
+public class Buffer<T>{
     T[] buffer;
     int buffer_size;
 
-    public CircularBuffer(int buffer_size){
+    public Buffer(int buffer_size){
         this.buffer_size = buffer_size;
         buffer = new T[buffer_size];
     }

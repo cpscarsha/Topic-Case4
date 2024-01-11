@@ -32,7 +32,7 @@ public class Ball : NetworkBehaviour
                     if(i.collider.CompareTag("Obstacle")){
                         Debug.Log("touch Obstacle");
                         g_kinematic.velocity *= new Vector2(1, -1); 
-                        g_kinematic.ResetGravity();
+                        g_kinematic.now_gravity = -g_kinematic.now_gravity;
                     }
                 }
                 catch{}
@@ -73,6 +73,7 @@ public class Ball : NetworkBehaviour
     }
     public void Hit(float direct, float force){
         g_kinematic.velocity = new Vector2(force*Mathf.Cos(direct), force*Mathf.Sin(direct));
+        g_kinematic.ResetGravity();
         //GetComponent<ObjectSync>().g_sync_position = true;
     }
 }

@@ -5,11 +5,12 @@ public class ObjectSync : NetworkBehaviour
 {
     private Vector2 _syncVelocity;
     private Vector3 _syncPosition;
+    private float _syncGravity;
     
     private Kinematic g_kinematic;
     private NetworkTimer g_timer;
-    private Vector3 g_delay_position;
-    private Vector3 g_delay_velocity;
+    private Buffer<Vector3> g_delay_position = new(1024);
+    private int buffer_index = 0;
 
     public bool g_start_sync = false;
     private void Start(){
@@ -27,27 +28,29 @@ public class ObjectSync : NetworkBehaviour
     {
         if(!IsServer){
             if(g_timer.ShouldTick()){
-                g_delay_position = transform.position;
-                g_delay_velocity = g_kinematic.velocity;
+                g_delay_position.Add(transform.position, buffer_index);
+                // g_delay_velocity = g_kinematic.velocity;
+                buffer_index++;
             }
         }
         else{
-            UploadOwnerTransformClientRpc(transform.position, g_kinematic.velocity);
+            UploadOwnerTransformClientRpc(transform.position, g_kinematic.velocity, g_kinematic.now_gravity);
         }
     }
-
+    private int delay_tick = 5;
     private void SyncTransform(){
-        if(Vector3.Distance(_syncPosition, g_delay_position) >= 0.5f || Vector3.Distance(_syncVelocity, g_delay_velocity) >= 0.5f){
+        if(buffer_index - delay_tick < 0 || Vector3.Distance(_syncPosition, g_delay_position.Get(buffer_index-delay_tick)) >= 0.2f){
             transform.position = _syncPosition;
             g_kinematic.velocity = _syncVelocity;
+            g_kinematic.now_gravity = _syncGravity;
+            Debug.Log(transform.position + "/" +g_kinematic.velocity+"/"+g_kinematic.gravity);
         }
-        Vector3 new_scale = transform.localScale;
-        transform.localScale = new_scale;
     }
 
     [ClientRpc]
-    private void UploadOwnerTransformClientRpc(Vector3 position, Vector2 velocity){ // 上傳資料至客戶端 
+    private void UploadOwnerTransformClientRpc(Vector3 position, Vector2 velocity, float gravity){ // 上傳資料至客戶端 
         _syncPosition = position;
         _syncVelocity = velocity;
+        _syncGravity = gravity;
     }
 }

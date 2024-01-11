@@ -20,7 +20,7 @@ public class Kinematic : MonoBehaviour
         g_self_collider = GetComponent<Collider2D>();
         g_self_rigidbody = GetComponent<Rigidbody2D>();
     }
-    private float now_gravity = 0;   
+    public float now_gravity = 0;
     void FixedUpdate(){
         // try{
         //     if(!GetComponent<Player>().IsServer)return;
@@ -69,7 +69,7 @@ public class Kinematic : MonoBehaviour
         //     velocity.y = 0;
         // }
 
-        Debug.Log("g:"+now_gravity);
+        
 
         g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Time.fixedDeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Time.fixedDeltaTime);
         // if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){

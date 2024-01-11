@@ -95,6 +95,7 @@ MonoBehaviour:
   ground: -0.635
   avoid_collision_tags:
   - Player
+  now_gravity: 0
 --- !u!95 &6791019004475330885
 Animator:
   serializedVersion: 5
@@ -5178,6 +5179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   g_start_sync: 0
+  delay_tick: 10
 --- !u!114 &8944796625453546565
 MonoBehaviour:
   m_ObjectHideFlags: 0
