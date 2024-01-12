@@ -5,7 +5,6 @@ using Unity.VisualScripting.FullSerializer;
 using UnityEditor.Rendering;
 using UnityEngine;
 using Fusion;
-using Unity.Netcode.Components;
 
 public class Kinematic : NetworkBehaviour
 {

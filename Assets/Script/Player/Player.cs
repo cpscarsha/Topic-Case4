@@ -35,10 +35,6 @@ public class Player : NetworkBehaviour
     public Ball g_ball_object;
     public bool g_is_host = false;
 
-    private Vector2[] g_touch_base_position;
-    private float[] g_touch_begin_time;
-    private float[] g_touch_duration;
-
     // [Networked] public byte life { get; set; }
     // public void Init()
     // {
@@ -60,9 +56,6 @@ public class Player : NetworkBehaviour
         
         if(!Runner.IsServer)GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = transform;
 
-        g_touch_base_position = new Vector2[2];
-        g_touch_begin_time = new float[2];
-        g_touch_duration = new float[2];
         
     }
 
