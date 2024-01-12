@@ -49,7 +49,7 @@ public class Player : NetworkBehaviour
     void Start()
     {
         Debug.Log("Player is Init");
-        GameManager.g_is_connect = true;
+        // GameManager.g_is_connect = true;
         g_self_animator = GetComponent<Animator>();
         // g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
@@ -106,23 +106,23 @@ public class Player : NetworkBehaviour
         //     Debug.Log("IsStuck");
         // }
         // if(!IsOwner)return;
-        if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
+        // if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
             
             // Debug.Log(g_self_animator.GetBool("isDodge"));
             CheckSlide();
             ExcuteLight();
             ExcuteAnimator();
-        }
+        // }
     }
 
     public void SetVelocity(Vector3 velocity){
         g_self_kinematic.velocity = velocity;
-        GetComponent<PlayerTransformSync>().StartSync();
+        // GetComponent<PlayerTransformSync>().StartSync();
     }
     public void SetVelocity(char x_y_z, float value){
         if(x_y_z == 'x')g_self_kinematic.velocity.x = value;
         else if(x_y_z == 'y')g_self_kinematic.velocity.y = value;
-        GetComponent<PlayerTransformSync>().StartSync();
+        // GetComponent<PlayerTransformSync>().StartSync();
     }
     
     /*觸控觸發的函數*/
@@ -242,7 +242,7 @@ public class Player : NetworkBehaviour
             change_scale.x = -1;
         }
         transform.localScale = change_scale;
-        GetComponent<PlayerTransformSync>().StartSync();
+        // GetComponent<PlayerTransformSync>().StartSync();
     }
     public bool GetDirect(){ // 取得朝向，true時向右
         return transform.localScale.x > 0;

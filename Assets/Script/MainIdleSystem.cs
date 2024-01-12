@@ -7,7 +7,6 @@ public class MainIdleSystem : MonoBehaviour
 {
     public bool g_game_start = false;
     public bool g_is_single_player = false;
-    public LightCircle g_halo;
     public CinemachineVirtualCamera g_camera;
     public GameObject g_single_player_perfab;
     public GameObject g_single_player_dungeon_perfab;
@@ -27,9 +26,9 @@ public class MainIdleSystem : MonoBehaviour
     void Update()
     {   
         Random.seed = (int)Time.time*1000000;
-        Debug.Log("connect:"+GameManager.g_is_connect);
+        // Debug.Log("connect:"+GameManager.g_is_connect);
         Debug.Log("start:"+g_game_start);
-        if(Time.time > g_delay_start && GameManager.g_is_connect && Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended){
+        if(Time.time > g_delay_start && Input.touches.Length > 0 && Input.touches[0].phase == TouchPhase.Ended){
             g_game_start = true;
             // g_camera.Follow = GameObject.FindWithTag("Player").transform;
             // g_camera.m_Lens.OrthographicSize = 2.35f;

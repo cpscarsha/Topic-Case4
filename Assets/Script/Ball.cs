@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode.Components;
-using Unity.Netcode;
+using Fusion;
 
 public class Ball : NetworkBehaviour
 {
@@ -18,7 +17,6 @@ public class Ball : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!IsServer)return;
         if(g_last_position == transform.position)g_stop_time+=1;
         else g_stop_time = 0;
         if(g_stop_time > 100){

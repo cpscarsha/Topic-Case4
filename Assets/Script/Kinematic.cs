@@ -72,7 +72,7 @@ public class Kinematic : NetworkBehaviour
 
         
 
-        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Runner.DeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Runner.DeltaTime);
+        GetComponent<NetworkTransform>.Teleport = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Runner.DeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Runner.DeltaTime);
         // if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
         //     Destroy(GetComponent<MobBase>().gameObject);
         // }
