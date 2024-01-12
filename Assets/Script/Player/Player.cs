@@ -165,7 +165,7 @@ public class Player : NetworkBehaviour
             change_scale.x = -1;
         }
         transform.localScale = change_scale;
-        GetComponent<PlayerTransformSync>().StartSync();
+        // GetComponent<PlayerTransformSync>().StartSync();
     }
     public bool GetDirect(){ // 取得朝向，true時向右
         return transform.localScale.x > 0;

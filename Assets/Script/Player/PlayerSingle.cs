@@ -41,7 +41,7 @@ public class PlayerSingle : MonoBehaviour
     void Start()
     {
         Debug.Log("Player is Init");
-        GameManager.g_is_connect = true;
+        // GameManager.g_is_connect = true;
         g_self_animator = GetComponent<Animator>();
         // g_self_rigidbody = GetComponent<Rigidbody2D>();
         g_self_kinematic = GetComponent<Kinematic>();
