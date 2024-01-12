@@ -37,13 +37,13 @@ public class ObjectSync : NetworkBehaviour
             UploadOwnerTransformClientRpc(transform.position, g_kinematic.velocity, g_kinematic.now_gravity);
         }
     }
-    private int delay_tick = 5;
+    private int delay_tick = 10;
     private void SyncTransform(){
-        if(buffer_index - delay_tick < 0 || Vector3.Distance(_syncPosition, g_delay_position.Get(buffer_index-delay_tick)) >= 0.2f){
+        if(buffer_index - delay_tick < 0 || Vector3.Distance(_syncPosition, g_delay_position.Get(buffer_index-delay_tick)) >= 0.1f){
             transform.position = _syncPosition;
             g_kinematic.velocity = _syncVelocity;
             g_kinematic.now_gravity = _syncGravity;
-            Debug.Log(transform.position + "/" +g_kinematic.velocity+"/"+g_kinematic.gravity);
+            // Debug.Log(transform.position + "/" +g_kinematic.velocity+"/"+g_kinematic.gravity);
         }
     }
 

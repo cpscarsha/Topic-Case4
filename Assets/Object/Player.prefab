@@ -5179,7 +5179,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   g_start_sync: 0
-  delay_tick: 10
+  delay_tick: 5
 --- !u!114 &8944796625453546565
 MonoBehaviour:
   m_ObjectHideFlags: 0

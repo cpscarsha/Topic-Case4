@@ -116,14 +116,25 @@ public class Player : NetworkBehaviour
         }
     }
 
-    public void SetVelocity(Vector3 velocity){
-        g_self_kinematic.velocity = velocity;
-        GetComponent<PlayerTransformSync>().StartSync();
+    public void SetVelocity(Vector2 velocity){
+        if(g_self_kinematic.velocity != velocity){
+            g_self_kinematic.velocity = velocity;
+            GetComponent<PlayerTransformSync>().StartSync();
+        }
     }
     public void SetVelocity(char x_y_z, float value){
-        if(x_y_z == 'x')g_self_kinematic.velocity.x = value;
-        else if(x_y_z == 'y')g_self_kinematic.velocity.y = value;
-        GetComponent<PlayerTransformSync>().StartSync();
+        if(x_y_z == 'x'){
+            if(g_self_kinematic.velocity.x != value){
+                g_self_kinematic.velocity.x = value;
+                GetComponent<PlayerTransformSync>().StartSync();
+            }
+        }
+        else if(x_y_z == 'y'){
+            if(g_self_kinematic.velocity.y != value){
+                g_self_kinematic.velocity.y = value;
+                GetComponent<PlayerTransformSync>().StartSync();
+            }
+        }
     }
     
     /*觸控觸發的函數*/
@@ -236,14 +247,16 @@ public class Player : NetworkBehaviour
     
     private void SetDirect(bool is_right){ // 設定朝向，當 is_right 時朝右，否則朝左
         Vector3 change_scale = transform.localScale;
-        if(is_right){
+        if(is_right && change_scale.x == -1){
             change_scale.x = 1;
+            transform.localScale = change_scale;
+            GetComponent<PlayerTransformSync>().StartSync();
         }
-        else if(!is_right){
+        else if(!is_right && change_scale.x == 1){
             change_scale.x = -1;
+            transform.localScale = change_scale;
+            GetComponent<PlayerTransformSync>().StartSync();
         }
-        transform.localScale = change_scale;
-        GetComponent<PlayerTransformSync>().StartSync();
     }
     public bool GetDirect(){ // 取得朝向，true時向右
         return transform.localScale.x > 0;
