@@ -71,7 +71,7 @@ MonoBehaviour:
   g_max_health: 0
   g_attack: 1
   g_attack_cooldown: 0.2
-  g_attack_delay: 5
+  g_attack_delay: 0.1
   g_attack_delay_remaining: 0
   g_main_idle: {fileID: 0}
   t_time: 0

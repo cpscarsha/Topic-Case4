@@ -5,6 +5,7 @@ using Fusion;
 using Fusion.Sockets;
 using System;
 using UnityEngine.SceneManagement;
+using Cinemachine;
 
 public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -55,6 +56,7 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             // Create a unique position for the player
             Vector3 spawnPosition = new Vector3((player.RawEncoded % runner.Config.Simulation.PlayerCount) * 3, 1, 0);
             NetworkObject networkPlayerObject = runner.Spawn(_playerPrefab, spawnPosition, Quaternion.identity, player);
+            if(player.AsIndex == 0)GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = networkPlayerObject.transform;
             // Keep track of the player avatars for easy access
             _spawnedCharacters.Add(player, networkPlayerObject);
         }
@@ -70,15 +72,30 @@ public class BasicSpawner : MonoBehaviour, INetworkRunnerCallbacks
             _spawnedCharacters.Remove(player);
         }
     }
-    public void OnInput(NetworkRunner runner, NetworkInput input) { 
-        var data = new NetworkInputData();
-        try{
-            data.input1_position = Input.touches[0].position;
-            data.input1_phase = Input.touches[0].phase;
-            data.input2_position = Input.touches[1].position;
-            data.input2_phase = Input.touches[1].phase;
-        }catch{}
-        input.Set(data);
+    public void OnInput(NetworkRunner runner, NetworkInput input) {
+        var data = new NetworkInputData
+        {
+            has_right = false,
+            has_left = false
+        };
+        if (Input.touches.Length > 0){
+            foreach(Touch touch in Input.touches){
+                if(data.has_right && data.has_left)break;
+                if(touch.position.x > Camera.main.pixelWidth/2){
+                    if(data.has_right)continue;
+                    data.has_right = true;
+                    data.right_phase = touch.phase;
+                    data.right_position = touch.position;
+                }
+                else{
+                    if(data.has_left)continue;
+                    data.has_left = true;
+                    data.left_phase = touch.phase;
+                    data.left_position = touch.position;
+                }
+            }
+            input.Set(data);
+        }
     }
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }

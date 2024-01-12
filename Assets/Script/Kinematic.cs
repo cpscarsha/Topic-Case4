@@ -5,6 +5,7 @@ using Unity.VisualScripting.FullSerializer;
 using UnityEditor.Rendering;
 using UnityEngine;
 using Fusion;
+using Unity.Netcode.Components;
 
 public class Kinematic : NetworkBehaviour
 {
@@ -71,8 +72,8 @@ public class Kinematic : NetworkBehaviour
         // }
 
         
-
-        g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Runner.DeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Runner.DeltaTime);
+        transform.Translate(new Vector3((velocity.x + knockback.x)*Runner.DeltaTime, (velocity.y + knockback.y + now_gravity)*Runner.DeltaTime, 0));
+        // g_self_rigidbody.position = new Vector2(g_self_rigidbody.position.x + (velocity.x + knockback.x)*Runner.DeltaTime, g_self_rigidbody.position.y + (velocity.y + knockback.y + now_gravity)*Runner.DeltaTime);
         // if(g_self_rigidbody.position.y <= -10 && GetComponent<MobBase>()){
         //     Destroy(GetComponent<MobBase>().gameObject);
         // }

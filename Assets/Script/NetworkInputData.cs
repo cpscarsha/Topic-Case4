@@ -3,9 +3,10 @@ using UnityEngine;
 
 public struct NetworkInputData : INetworkInput
 {
-    public TouchPhase input1_phase;
-    public Vector3 input1_position;
-    public TouchPhase input2_phase;
-    public Vector3 input2_position;
-
+    public TouchPhase left_phase;
+    public Vector3 left_position;
+    public TouchPhase right_phase;
+    public Vector3 right_position;
+    public bool has_right;
+    public bool has_left;
 }
