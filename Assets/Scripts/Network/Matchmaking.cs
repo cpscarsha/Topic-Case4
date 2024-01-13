@@ -49,6 +49,7 @@ public class Matchmaking : MonoBehaviour {
         _connectedLobby = await CreateLobby(2, lobby_name);
         is_connected = true;
         lobby_name_input.SetActive(false);
+        UI.SetActive(false);
     }
 
     public async void CreateOrJoinLobby() {
@@ -60,6 +61,7 @@ public class Matchmaking : MonoBehaviour {
             _buttons.SetActive(false);
             is_connected = true;
         }
+        UI.SetActive(false);
     }
     private async void OnEnable()
     {

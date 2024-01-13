@@ -146,7 +146,6 @@ public class Player : NetworkBehaviour
     private bool g_is_right_touch = false;
 
     private void TouchSlide(Direct touch_direct, Direct slide_direct, float move_distance, float hold_time){
-
         if(touch_direct == Direct.LEFT){
             if(slide_direct == Direct.RIGHT && move_distance > 5f){
                 g_self_animator.SetBool("isWalk", true);
@@ -165,10 +164,28 @@ public class Player : NetworkBehaviour
                     SetVelocity('y', 3);
                 }
             }
+            if(slide_direct == Direct.LEFT && move_distance > 40f){
+                g_self_animator.SetBool("isDodge", true);
+                g_self_animator.SetBool("isWalk", false);
+                g_self_animator.SetBool("isAttack", false);
+                SetVelocity('x', -3f);
+                a_attack_end_level = 0;
+                g_self_animator.SetInteger("AttackLevel", 0);
+                SetDirect(true);
+            }
+            if(slide_direct == Direct.RIGHT && move_distance > 40f){
+                g_self_animator.SetBool("isDodge", true);
+                g_self_animator.SetBool("isWalk", false);
+                g_self_animator.SetBool("isAttack", false);
+                SetVelocity('x', 3f);
+                a_attack_end_level = 0;
+                g_self_animator.SetInteger("AttackLevel", 0);
+                SetDirect(false);
+            }
         }
     }
     private void TouchEnd(Direct touch_direct, Direct slide_direct, float move_distance, float hold_time){
-        Debug.Log(touch_direct + "/" + slide_direct + "/" + move_distance + "/" + hold_time);
+        // Debug.Log(touch_direct + "/" + slide_direct + "/" + move_distance + "/" + hold_time);
 
         if(touch_direct == Direct.RIGHT && hold_time <= 0.1f){ // 點擊
             int attack_level = g_self_animator.GetInteger("AttackLevel");

@@ -1,56 +1,115 @@
+using System.ComponentModel;
+using System.Threading;
 using Unity.Netcode;
 using UnityEngine;
 
 public class ObjectSync : NetworkBehaviour
 {
+    private float _syncScaleX;
+    private float _syncGravity;
     private Vector2 _syncVelocity;
     private Vector3 _syncPosition;
-    private float _syncGravity;
     
     private Kinematic g_kinematic;
     private NetworkTimer g_timer;
-    private Buffer<Vector3> g_delay_position = new(1024);
+
+    private static readonly int buffer_size = 1000;
+    private Buffer<Vector3> g_delay_position = new(buffer_size);
+    private Buffer<Vector3> g_delay_velocity = new(buffer_size);
     private int buffer_index = 0;
+    private int tick_difference; // 用於計算主機和客戶端誤差時間
 
     public bool g_start_sync = false;
     private void Start(){
-        g_timer = new NetworkTimer(30);
+        g_timer = new NetworkTimer(45);
         g_kinematic = GetComponent<Kinematic>();
     }
 
     private void Update(){
         g_timer.Update(Time.deltaTime);
-        if(!IsServer){
-            SyncTransform();
-        }
     }
     private void FixedUpdate()
     {
-        if(!IsServer){
-            if(g_timer.ShouldTick()){
+        if(g_timer.ShouldTick()){
+            tick_difference += 1;
+            if(!IsServer){
                 g_delay_position.Add(transform.position, buffer_index);
-                // g_delay_velocity = g_kinematic.velocity;
+                g_delay_velocity.Add(g_kinematic.velocity, buffer_index);
                 buffer_index++;
+                if(buffer_index < 0)buffer_index = buffer_size;
             }
-        }
-        else{
-            UploadOwnerTransformClientRpc(transform.position, g_kinematic.velocity, g_kinematic.now_gravity);
-        }
-    }
-    private int delay_tick = 10;
-    private void SyncTransform(){
-        if(buffer_index - delay_tick < 0 || Vector3.Distance(_syncPosition, g_delay_position.Get(buffer_index-delay_tick)) >= 0.1f){
-            transform.position = _syncPosition;
-            g_kinematic.velocity = _syncVelocity;
-            g_kinematic.now_gravity = _syncGravity;
-            // Debug.Log(transform.position + "/" +g_kinematic.velocity+"/"+g_kinematic.gravity);
+            if(IsServer){
+                if(g_start_sync){ // 主機取得玩家速度
+                    g_kinematic.velocity = _syncVelocity;
+                    Vector3 new_scale = transform.localScale;
+                    new_scale.x = _syncScaleX;
+                    transform.localScale = new_scale;
+                    g_kinematic.now_gravity = _syncGravity;
+                    g_start_sync = false;
+                    tick_difference = 0;
+                }
+                UploadOwnerTransformClientRpc(transform.position, g_kinematic.velocity, transform.localScale.x, g_kinematic.now_gravity, tick_difference);
+            }
         }
     }
 
+    public void StartSync()
+    {
+        if (IsLocalPlayer) // 本地玩家上傳速度
+        {
+            if(IsServer){
+                _syncVelocity = g_kinematic.velocity;
+                _syncScaleX = transform.localScale.x;
+                _syncGravity = g_kinematic.now_gravity;
+            }
+            else{
+                tick_difference = 0;
+                UploadTransformServerRpc(g_kinematic.velocity, transform.localScale.x, g_kinematic.now_gravity);
+            }
+        }
+    }
+
+    public int delay_tick = 10;
+    private int last_index = 0;
+    private void SyncTransform(){ // 客戶端同步資料
+        if(IsOwner && delay_tick > 0 && tick_difference - delay_tick >= 20  && tick_difference - delay_tick <= 100 && buffer_index - delay_tick >= 0 && Vector3.Distance(_syncPosition, g_delay_position.Get(buffer_index-delay_tick)) >= 0.1f){
+            if(last_index != buffer_index - delay_tick){
+                Debug.Log(delay_tick + "/" + _syncPosition + "/" + g_delay_position.Get(buffer_index-delay_tick));
+                tick_difference -= delay_tick; 
+                transform.position = _syncPosition;
+                g_kinematic.velocity = _syncVelocity;
+                g_kinematic.now_gravity = _syncGravity;
+            }
+            last_index = buffer_index - delay_tick; 
+        }
+        if(!IsOwner && buffer_index - delay_tick >= 0 && (Vector3.Distance(_syncPosition, g_delay_position.Get(buffer_index-delay_tick)) >= 0.1f || Vector3.Distance(_syncVelocity, g_delay_velocity.Get(buffer_index-delay_tick)) >= 0.5f )){
+            transform.position = _syncPosition;
+            g_kinematic.velocity = _syncVelocity;
+            g_kinematic.now_gravity = _syncGravity;
+        }
+        Vector3 new_scale = transform.localScale;
+        new_scale.x = _syncScaleX;
+        transform.localScale = new_scale;
+    }
+    public void ResetTickDifferent(){
+        tick_difference = 0;
+    }
+
     [ClientRpc]
-    private void UploadOwnerTransformClientRpc(Vector3 position, Vector2 velocity, float gravity){ // 上傳資料至客戶端 
+    private void UploadOwnerTransformClientRpc(Vector3 position, Vector2 velocity, float scale_x, float gravity , int tick_difference){ // 上傳資料至客戶端 
         _syncPosition = position;
+        _syncScaleX = scale_x;
         _syncVelocity = velocity;
         _syncGravity = gravity;
+        delay_tick = this.tick_difference - tick_difference;
+        SyncTransform();
+    }
+
+    [ServerRpc]
+    private void UploadTransformServerRpc(Vector2 velocity, float scale_x, float gravity){ // 上傳資料至主機端 
+        _syncVelocity = velocity;
+        _syncScaleX = scale_x;
+        _syncGravity = gravity;
+        g_start_sync = true;
     }
 }
