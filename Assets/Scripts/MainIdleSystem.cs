@@ -20,6 +20,10 @@ public class MainIdleSystem : MonoBehaviour
     {
         g_camera.m_Lens.OrthographicSize = 0.35f;
         g_delay_start = Time.time + 1;
+        Screen.autorotateToLandscapeLeft = true;
+        Screen.autorotateToLandscapeRight = true;
+        Screen.autorotateToPortrait = true;
+        Screen.autorotateToPortraitUpsideDown = true;
     }
 
     // Update is called once per frame

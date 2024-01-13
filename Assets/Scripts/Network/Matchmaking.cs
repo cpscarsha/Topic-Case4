@@ -76,7 +76,7 @@ public class Matchmaking : MonoBehaviour {
         try
         {
             var options = new QueryLobbiesOptions();
-            options.Count = 25;
+            options.Count = 6;
 
             options.Filters = new List<QueryFilter>()
             {

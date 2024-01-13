@@ -61,6 +61,10 @@ public class Player : NetworkBehaviour
         transform.position = new Vector3(1, 0, 0);
         if(IsOwner){
             Screen.orientation = ScreenOrientation.LandscapeLeft;
+            Screen.autorotateToLandscapeLeft = false;
+            Screen.autorotateToLandscapeRight = false;
+            Screen.autorotateToPortrait = false;
+            Screen.autorotateToPortraitUpsideDown = false;
             if(IsHost){
                 g_is_host = IsHost;
                 g_ball_object = Instantiate(g_ball).GetComponent<Ball>();
@@ -140,106 +144,40 @@ public class Player : NetworkBehaviour
     /*觸控觸發的函數*/
     private bool g_is_buffer_move = false;
     private bool g_is_right_touch = false;
-    void Click(){ // 點擊螢幕時觸發
-        if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            // g_self_animator.SetBool("isAttack", true); // 開始攻擊動畫
-            // g_self_animator.SetBool("isWalk", false);
-            // g_self_animator.SetBool("isDodge", false);
-            // g_self_kinematic.velocity.x = (GetDirect()?1:-1)*2;
+
+    private void TouchSlide(Direct touch_direct, Direct slide_direct, float move_distance, float hold_time){
+
+        if(touch_direct == Direct.LEFT){
+            if(slide_direct == Direct.RIGHT && move_distance > 5f){
+                g_self_animator.SetBool("isWalk", true);
+                SetVelocity('x', 1.8f);
+                SetDirect(true);
+            }
+            else if(slide_direct == Direct.LEFT && move_distance > 5f){
+                g_self_animator.SetBool("isWalk", true);
+                SetVelocity('x', -1.8f);
+                SetDirect(false);
+            }
+        }
+        else{
+            if(slide_direct == Direct.UP && move_distance > 5f){
+                if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
+                    SetVelocity('y', 3);
+                }
+            }
+        }
+    }
+    private void TouchEnd(Direct touch_direct, Direct slide_direct, float move_distance, float hold_time){
+        Debug.Log(touch_direct + "/" + slide_direct + "/" + move_distance + "/" + hold_time);
+
+        if(touch_direct == Direct.RIGHT && hold_time <= 0.1f){ // 點擊
             int attack_level = g_self_animator.GetInteger("AttackLevel");
             if(attack_level < 3)attack_level++;
             g_self_animator.SetInteger("AttackLevel", attack_level);
         }
-    }
-    void TouchEnd(){
-        if(!g_is_right_touch && g_self_animator.GetBool("isWalk")){
+        if(touch_direct == Direct.LEFT){
             g_self_animator.SetBool("isWalk", false);
             SetVelocity('x', 0);
-        }
-    }
-    void SlideUp(){
-        // if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
-        //     g_self_kinematic.velocity.y = 3;
-        // }
-    }
-    void SlideDown(){
-        // g_self_kinematic.velocity.y = -2;
-    }
-    void SlideRight(){
-        if(!g_is_right_touch){
-            g_self_animator.SetBool("isDodge", true);
-            g_self_animator.SetBool("isWalk", false);
-            g_self_animator.SetBool("isAttack", false);
-            SetVelocity('x', 2);
-            a_attack_end_level = 0;
-            Debug.Log("c");
-            g_self_animator.SetInteger("AttackLevel", 0);
-            SetDirect(false);
-        }
-    }
-    void SlideLeft(){
-        if(!g_is_right_touch){
-            g_self_animator.SetBool("isDodge", true);
-            g_self_animator.SetBool("isWalk", false);
-            g_self_animator.SetBool("isAttack", false);
-            SetVelocity('x', -2);
-            a_attack_end_level = 0;
-            Debug.Log("d");
-            g_self_animator.SetInteger("AttackLevel", 0);
-            SetDirect(true);
-        }
-    }
-    void KeepSlideUp(){
-        // if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
-        //     g_self_kinematic.velocity.y = 3;
-        // }
-    }
-    void KeepSlideDown(){
-
-    }
-    void KeepSlideRight(){
-        if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            g_self_animator.SetBool("isWalk", true);
-            SetVelocity('x', 1.8f);
-            SetDirect(true);
-        }
-    }
-    void KeepSlideLeft(){
-        if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            g_self_animator.SetBool("isWalk", true);
-            SetVelocity('x', -1.8f);
-            SetDirect(false);
-        }
-    }
-    void ShortSlideUp(){
-        if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            if(g_self_kinematic.CheckCollisionIn(Vector2.down, 0.05f)){
-                SetVelocity('y', 3);
-            }
-            if(g_is_buffer_move){
-                g_is_buffer_move = false;
-                SetVelocity('x', 0);
-            }
-        }
-    }
-    void ShortSlideDown(){
-        if(g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            if(g_is_buffer_move){
-                g_is_buffer_move = false;
-                SetVelocity('x', 0);
-            }
-        }
-    }
-    void ShortSlideRight(){
-        if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            SetVelocity('x', 1);
-            g_is_buffer_move = true;
-        }
-    }
-    void ShortSlideLeft(){
-        if(!g_is_right_touch && !g_self_animator.GetBool("isDodge")){
-            SetVelocity('x', -1);
-            g_is_buffer_move = true;
         }
     }
     /*觸控觸發的函數*/
@@ -320,136 +258,97 @@ public class Player : NetworkBehaviour
             GetComponent<UnityEngine.Rendering.Universal.Light2D>().intensity = 3*display_light + 0.3f;
         }
     }
-    // private PlayerInput GetNowInput(){
-    //     if(Input.touches.Length > 0){
-    //         Touch touch = Input.touches[0];
-    //         Vector3 touch_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-    //         if(touch_position.x > Camera.main.transform.position.x){
-    //             return PlayerInput.RIGHT;
-    //         }
-    //         else{
-    //             return PlayerInput.LEFT;
-    //         }
-    //     }
-    //     return PlayerInput.NOTHING;
-    // }
-    // private PlayerInput GetBeginTouchInput(){
-    //     if(Input.touches.Length > 0){
-    //         Touch touch = Input.touches[0];
-    //         if(touch.phase == TouchPhase.Began){
-    //             Vector3 touch_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-    //             if(touch_position.x > Camera.main.transform.position.x){
-    //                 return PlayerInput.RIGHT;
-    //             }
-    //             else{
-    //                 return PlayerInput.LEFT;
-    //             }
-    //         }
-    //     }
-    //     return PlayerInput.NOTHING;
-    // }
-    // private PlayerInput GetEndedTouchInput(){
-    //     if(Input.touches.Length > 0){
-    //         Touch touch = Input.touches[0];
-    //         if(touch.phase == TouchPhase.Ended){
-    //             Vector3 touch_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-    //             if(touch_position.x > Camera.main.transform.position.x){
-    //                 return PlayerInput.RIGHT;
-    //             }
-    //             else{
-    //                 return PlayerInput.LEFT;
-    //             }
-    //         }
-    //     }
-    //     return PlayerInput.NOTHING;
-    // }
+    private enum Direct{
+        UP = 0,
+        DOWN = 1,
+        LEFT = 2,
+        RIGHT = 3
+    } 
+    private Direct AngleToDirect(float theata){
+        if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
+            return Direct.UP;
+        }
+        else if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
+            return Direct.DOWN;
+        }
+        else if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
+            return Direct.RIGHT;
+        }
+        else{
+            return Direct.LEFT;
+        }
+    }
+    private struct TouchData{
+        public Vector3 touch_base_position;
+        public Vector3 last_position;
+        public float touch_time;
+        public bool is_touch;
+    }
+    private TouchData right_data;
+    private TouchData left_data;
 
-    
-    
     private void CheckSlide(){
-        bool has_right = false, has_left = false;
-        foreach(Touch touch in Input.touches){
-            if(has_right && has_left)break;
-            if(Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane)).x > transform.position.x){
-                if(has_right)continue;
-                has_right = true;
-                g_is_right_touch = true;
-            }
-            else{
-                if(has_left)continue;
-                has_left = true;
-                g_is_right_touch = false;
-            }
-            g_touch_duration[g_is_right_touch ? 1 : 0] = Time.time-g_touch_begin_time[g_is_right_touch ? 1 : 0];
-            // Vector2 end_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-            Vector2 end_position = touch.position;
-            float theata = Mathf.Atan2(end_position.y-g_touch_base_position[g_is_right_touch ? 1 : 0].y, end_position.x-g_touch_base_position[g_is_right_touch ? 1 : 0].x);
-            // Debug.Log("base:"+g_touch_base_position+"|||"+end_position);
-            if(touch.phase == TouchPhase.Began){
-                // g_touch_base_position = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, Camera.main.nearClipPlane));
-                g_touch_base_position[g_is_right_touch ? 1 : 0] = touch.position;
-                g_touch_begin_time[g_is_right_touch ? 1 : 0] = Time.time;
-                g_touch_duration[g_is_right_touch ? 1 : 0] = 0;
-            }
-            else if(touch.phase == TouchPhase.Ended){
-                TouchEnd();
-                if(g_touch_duration[g_is_right_touch ? 1 : 0] < 0.15f){
-                    if(Vector2.Distance(g_touch_base_position[g_is_right_touch ? 1 : 0], end_position) < 0.3f){
-                        Click();
+        if(right_data.is_touch)right_data.touch_time += Time.deltaTime;
+        if(left_data.is_touch)left_data.touch_time += Time.deltaTime;
+        if(Input.touches.Length > 0){
+            NetworkInputData data = new(Input.touches);
+            if(data.has_right){
+                if(data.right_phase == TouchPhase.Began){
+                    right_data.is_touch = true;
+                    right_data.touch_base_position = data.right_position;
+                    right_data.touch_time = 0;
+                }
+                else if(data.right_phase == TouchPhase.Moved || data.right_phase == TouchPhase.Stationary){
+                    if(!right_data.is_touch){
+                        right_data.is_touch = true;
+                        right_data.touch_base_position = data.right_position;
+                        right_data.touch_time = 0;
                     }
-                    else{
-                        if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
-                            SlideUp();
-                        }
-                        else if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
-                            SlideDown();
-                        }
-                        else if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
-                            SlideRight();
-                        }
-                        else if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
-                            SlideLeft();
-                        }
+                    float theata = Mathf.Atan2(data.right_position.y - right_data.touch_base_position.y, data.right_position.x - right_data.touch_base_position.x);
+                    TouchSlide(Direct.RIGHT, AngleToDirect(theata), Vector3.Distance(data.right_position, right_data.touch_base_position), right_data.touch_time);
+                }
+                else{
+                    right_data.is_touch = false;
+                    float theata = Mathf.Atan2(data.right_position.y - right_data.touch_base_position.y, data.right_position.x - right_data.touch_base_position.x);
+                    TouchEnd(Direct.RIGHT, AngleToDirect(theata), Vector3.Distance(data.right_position, right_data.touch_base_position), right_data.touch_time);
+                }
+                right_data.last_position = data.right_position;
+            }
+            if(data.has_left){
+                if(data.left_phase == TouchPhase.Began){
+                    left_data.is_touch = true;
+                    left_data.touch_base_position = data.left_position;
+                    left_data.touch_time = 0;
+                }
+                else if(data.left_phase == TouchPhase.Moved || data.left_phase == TouchPhase.Stationary){
+                    if(!left_data.is_touch){
+                        left_data.is_touch = true;
+                        left_data.touch_base_position = data.left_position;
+                        left_data.touch_time = 0;
                     }
+                    float theata = Mathf.Atan2(data.left_position.y - left_data.touch_base_position.y, data.left_position.x - left_data.touch_base_position.x);
+                    TouchSlide(Direct.LEFT, AngleToDirect(theata), Vector3.Distance(data.left_position, left_data.touch_base_position), left_data.touch_time);
                 }
-            }
-            else if(g_touch_duration[g_is_right_touch ? 1 : 0] > 0.15f){
-                if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
-                    KeepSlideUp();
+                else{
+                    left_data.is_touch = false;
+                    float theata = Mathf.Atan2(data.left_position.y - left_data.touch_base_position.y, data.left_position.x - left_data.touch_base_position.x);
+                    TouchEnd(Direct.LEFT, AngleToDirect(theata), Vector3.Distance(data.left_position, left_data.touch_base_position), left_data.touch_time);
                 }
-                else if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
-                    KeepSlideDown();
-                }
-                else if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
-                    KeepSlideRight();
-                }
-                else if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
-                    KeepSlideLeft();
-                }
-            }
-            else if(Vector2.Distance(g_touch_base_position[g_is_right_touch ? 1 : 0], end_position) > 0.3f){
-                if(theata <= Mathf.PI*3/4 && theata >= Mathf.PI/4){
-                    ShortSlideUp();
-                }
-                else if(theata >= -Mathf.PI*3/4 && theata <= -Mathf.PI/4){
-                    ShortSlideDown();
-                }
-                else if(theata >= -Mathf.PI/4 && theata <= Mathf.PI/4){
-                    ShortSlideRight();
-                }
-                else if(theata >= Mathf.PI*3/4 || theata <= -Mathf.PI*3/4){
-                    ShortSlideLeft();
-                }
+                left_data.last_position = data.left_position;
             }
         }
-        if(!has_right){
-            g_is_right_touch = true;
-            TouchEnd();
-        }     
-        if(!has_left){
-            g_is_right_touch = false;
-            TouchEnd();
-        }     
+        else{
+            if(right_data.is_touch){
+                right_data.is_touch = false;
+                float theata = Mathf.Atan2(right_data.last_position.y - right_data.touch_base_position.y, right_data.last_position.x - right_data.touch_base_position.x);
+                TouchEnd(Direct.RIGHT, AngleToDirect(theata), Vector3.Distance(right_data.last_position, right_data.touch_base_position), right_data.touch_time);
+            }    
+            if(left_data.is_touch){
+                left_data.is_touch = false;
+                float theata = Mathf.Atan2(left_data.last_position.y - left_data.touch_base_position.y, left_data.last_position.x - left_data.touch_base_position.x);
+                TouchEnd(Direct.LEFT, AngleToDirect(theata), Vector3.Distance(left_data.last_position, left_data.touch_base_position), left_data.touch_time);
+            }
+        } 
     }
     
     private void StartCooldown(){

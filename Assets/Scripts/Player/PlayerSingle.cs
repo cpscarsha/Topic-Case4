@@ -50,6 +50,10 @@ public class PlayerSingle : MonoBehaviour
         g_max_health = 100;
         g_health = 100;
         Screen.orientation = ScreenOrientation.Portrait;
+        Screen.autorotateToLandscapeLeft = false;
+        Screen.autorotateToLandscapeRight = false;
+        Screen.autorotateToPortrait = false;
+        Screen.autorotateToPortraitUpsideDown = false;
         GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>().Follow = transform;
         // GetComponent<NetworkAnimator>().Animator = GetComponent<Animator>();
         // g_death_particle = GetComponent<ParticleSystem>();

@@ -38,6 +38,18 @@ public class Ball : NetworkBehaviour
                 catch{}
             }
         }
+        else if(g_kinematic.CheckCollisionIn(Vector2.down, 0.1f)){
+            foreach(RaycastHit2D i in g_kinematic.g_collision_result){
+                try{
+                    if(i.collider.CompareTag("Obstacle")){
+                        Debug.Log("touch Obstacle");
+                        g_kinematic.velocity *= new Vector2(1, -1); 
+                        g_kinematic.now_gravity = -g_kinematic.now_gravity;
+                    }
+                }
+                catch{}
+            }
+        }
         else if(g_kinematic.HasCollision(0.1f)){
             foreach(RaycastHit2D i in g_kinematic.g_collision_result){
                 try{
