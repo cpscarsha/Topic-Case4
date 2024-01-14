@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.unify.unified-universal-blur": {
+      "version": "file:C:/Users/Shawn/Downloads/Unified-Universal-Blur-main",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "7.0.0"
+      }
+    },
     "com.unity.2d.animation": {
       "version": "9.0.4",
       "depth": 1,
