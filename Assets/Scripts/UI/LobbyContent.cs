@@ -13,7 +13,7 @@ public class LobbyContent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int pos_y = 375;
+        float pos_y = 362.5f;
         for(int i=0;i<transform.childCount;i++){
             transform.GetChild(i).localPosition = new Vector3(0, pos_y, 0);
             pos_y -= 140;

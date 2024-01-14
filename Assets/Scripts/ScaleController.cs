@@ -22,7 +22,8 @@ public class ScaleController : MonoBehaviour
             transform.localScale = new Vector2(g_origin_scale.x * Screen.height / 1920f / 2, g_origin_scale.y * Screen.height / 1920f / 2);
         }
         else{
-            transform.localScale = new Vector2(g_origin_scale.x * Screen.width / 1080f / 2, g_origin_scale.y * Screen.width / 1080f / 2);
+            if(!g_landscape_enable)transform.localScale = new Vector2(1, 1);
+            else transform.localScale = new Vector2(g_origin_scale.x * Screen.width / 1080f / 2, g_origin_scale.y * Screen.width / 1080f / 2);
         }
     }
 }

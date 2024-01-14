@@ -10,6 +10,7 @@ TagManager:
   - Ground
   - Obstacle
   - Pole
+  - GenerateShadowCasters
   layers:
   - Default
   - TransparentFX
