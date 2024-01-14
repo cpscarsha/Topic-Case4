@@ -76,7 +76,7 @@ public class Ball : NetworkBehaviour
             foreach(RaycastHit2D i in g_kinematic.g_collision_result){
                 try{
                     if(i.collider.CompareTag("Player")){
-                        Hit(Mathf.Atan2(transform.position.y - i.collider.transform.position.y, transform.position.x - i.collider.transform.position.x), 1.6f);
+                        Hit(Mathf.Atan2(transform.position.y - i.collider.transform.position.y, transform.position.x - i.collider.transform.position.x), 2.4f);
                         GetComponent<ObjectSync>().ResetTickDifferent();
                     }
                     else if(i.collider.CompareTag("Ground")){
@@ -100,7 +100,18 @@ public class Ball : NetworkBehaviour
         g_last_position = transform.position;
     }
     public void Reset(){
-        transform.position = GameObject.FindWithTag("Player").transform.position + new Vector3(0, 1, 0);   
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if(transform.position.x > 0 || players.Length == 1){
+            if(players[0].GetComponent<Player>().g_is_host)transform.position = players[0].transform.position + new Vector3(0, 1, 0);
+            else transform.position = players[1].transform.position + new Vector3(0, 1, 0);
+            GetComponent<ObjectSync>().ResetTickDifferent();
+        }
+        else{
+            if(players[1].GetComponent<Player>().g_is_host)transform.position = players[0].transform.position + new Vector3(0, 1, 0);
+            else transform.position = players[1].transform.position + new Vector3(0, 1, 0);
+            GetComponent<ObjectSync>().ResetTickDifferent();
+        }
+        g_kinematic.velocity = Vector2.zero; 
     }
     public void Hit(float direct, float force){
         g_kinematic.velocity = new Vector2(force*Mathf.Cos(direct), force*Mathf.Sin(direct));

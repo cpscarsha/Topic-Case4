@@ -97,7 +97,7 @@ public class Player : NetworkBehaviour
                         // }
                         if(i.collider.CompareTag("Ball"))
                         {
-                            i.collider.GetComponent<Ball>().Hit(Mathf.Atan2(i.collider.transform.position.y - transform.position.y, i.collider.transform.position.x - transform.position.x), 2.4f);
+                            i.collider.GetComponent<Ball>().Hit(Mathf.Atan2(i.collider.transform.position.y - transform.position.y, i.collider.transform.position.x - transform.position.x), 3.6f);
                             StartCooldown();
                         }
                     }
@@ -111,6 +111,17 @@ public class Player : NetworkBehaviour
         //     Debug.Log("IsStuck");
         // }
         if(!IsOwner)return;
+        if(g_self_kinematic.HasCollision(0.3f)){
+            foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
+                try{
+                    if(i.collider.CompareTag("Ball")){
+                        GetComponent<ObjectSync>().ResetTickDifferent();
+                    }
+                }
+                catch{}
+            }
+        }
+
         if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
             
             // Debug.Log(g_self_animator.GetBool("isDodge"));
@@ -148,14 +159,18 @@ public class Player : NetworkBehaviour
     private void TouchSlide(Direct touch_direct, Direct slide_direct, float move_distance, float hold_time){
         if(touch_direct == Direct.LEFT){
             if(slide_direct == Direct.RIGHT && move_distance > 5f){
-                g_self_animator.SetBool("isWalk", true);
-                SetVelocity('x', 1.8f);
-                SetDirect(true);
+                if(!g_self_animator.GetBool("isDodge")){
+                    g_self_animator.SetBool("isWalk", true);
+                    SetVelocity('x', 1.8f);
+                    SetDirect(true);
+                }
             }
             else if(slide_direct == Direct.LEFT && move_distance > 5f){
-                g_self_animator.SetBool("isWalk", true);
-                SetVelocity('x', -1.8f);
-                SetDirect(false);
+                if(!g_self_animator.GetBool("isDodge")){
+                    g_self_animator.SetBool("isWalk", true);
+                    SetVelocity('x', -1.8f);
+                    SetDirect(false);
+                }
             }
         }
         else{
@@ -187,7 +202,7 @@ public class Player : NetworkBehaviour
     private void TouchEnd(Direct touch_direct, Direct slide_direct, float move_distance, float hold_time){
         // Debug.Log(touch_direct + "/" + slide_direct + "/" + move_distance + "/" + hold_time);
 
-        if(touch_direct == Direct.RIGHT && hold_time <= 0.1f){ // 點擊
+        if(touch_direct == Direct.RIGHT && (hold_time <= 0.1f || move_distance < 40f)){ // 點擊
             int attack_level = g_self_animator.GetInteger("AttackLevel");
             if(attack_level < 3)attack_level++;
             g_self_animator.SetInteger("AttackLevel", attack_level);
@@ -219,24 +234,7 @@ public class Player : NetworkBehaviour
 
     private bool g_is_attack_ending = false;
     private void ExcuteAnimator(){ // 處理動畫造成的變數變化
-        // if(a_attack_end){
-        //     g_self_animator.SetBool("isAttack", false); // 關閉攻擊動畫
-        //     g_self_kinematic.velocity.x = 0;
-        //     a_attack_end = false;
-        // }
-
-        // if(a_walk_end){
-        //     if(GetNowInput() == PlayerInput.NOTHING){
-        //         g_self_animator.SetBool("isWalk", false);
-        //         g_self_kinematic.velocity.x = 0;
-        //         a_walk_end = false;
-        //     }
-        // }
-        // if(g_self_animator.GetBool("isWalk") && GetEndedTouchInput() != PlayerInput.NOTHING){ //長按持續行走
-        //     g_self_animator.SetBool("isWalk", false);
-        //     g_self_kinematic.velocity.x = 0;
-        //     a_walk_end = false;
-        // }
+        
         int attack_level = g_self_animator.GetInteger("AttackLevel");
         
         if(a_attack_end_level != 0 && a_attack_end_level >= attack_level && !g_is_attack_ending){
@@ -251,10 +249,6 @@ public class Player : NetworkBehaviour
             g_self_animator.SetInteger("AttackLevel", 0);
             Debug.Log("b");
         }
-        // else if(Time.time > g_attack_delay_remaining){
-        //     g_attack_delay_remaining = 0;
-        //     Debug.Log("d");
-        // }
         
         
         

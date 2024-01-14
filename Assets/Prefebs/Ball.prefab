@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: {x: 0, y: 0}
   knockback: {x: 0, y: 0}
-  gravity: 1
+  gravity: 2
   knockback_resistance: 0.1
   ground: -0.635
   avoid_collision_tags:

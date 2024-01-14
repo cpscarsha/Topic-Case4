@@ -66,10 +66,10 @@ public class PlayerSingle : MonoBehaviour
         if(g_main_idle.GetComponent<MainIdleSystem>().g_game_start){
             t_time = Time.time;
             if(a_is_sweeping && IsCooldownFinish()){
-                if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){
-                    foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){
+                if(g_self_kinematic.CheckCollisionIn(GetDirect()?Vector2.right:Vector2.left, 0.25f)){ // 偵測角色前方0.25單位距離內是否有碰撞箱
+                    foreach(RaycastHit2D i in g_self_kinematic.g_collision_result){ // 遍歷前方的所有碰撞箱
                         try{
-                            if(i.collider.CompareTag("Mob"))
+                            if(i.collider.CompareTag("Mob")) // 若前方有怪物則攻擊
                             {
                                 i.collider.GetComponent<MobBase>().BeHit(GetDirect(), 10, g_attack);
                                 StartCooldown();

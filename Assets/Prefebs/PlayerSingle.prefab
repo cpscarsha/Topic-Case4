@@ -145,7 +145,7 @@ MonoBehaviour:
   g_gameover: {fileID: 0}
   g_health: 0
   g_max_health: 0
-  g_attack: 1
+  g_attack: 0.2
   g_attack_cooldown: 0.2
   g_attack_delay: 0.1
   g_attack_delay_remaining: 0

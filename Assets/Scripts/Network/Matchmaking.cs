@@ -44,17 +44,14 @@ public class Matchmaking : MonoBehaviour {
         }
     }
     public async void CreateNewLobby(){
-        // await Authenticate();
-        if(lobby_name == " ")lobby_name = "lobby" + (lobbyItemParent.childCount+1);
-        _connectedLobby = await CreateLobby(2, lobby_name);
+        if(lobby_name == "")_connectedLobby = await CreateLobby(2, "lobby" + (lobbyItemParent.childCount+1));
+        else _connectedLobby = await CreateLobby(2, lobby_name);
         is_connected = true;
         lobby_name_input.SetActive(false);
         UI.SetActive(false);
     }
 
     public async void CreateOrJoinLobby() {
-        // await Authenticate();
-
         _connectedLobby = await QuickJoinLobby() ?? await CreateLobby();
 
         if (_connectedLobby != null) {
@@ -192,8 +189,7 @@ public class Matchmaking : MonoBehaviour {
             var options = new CreateLobbyOptions {
                 Data = new Dictionary<string, DataObject> { { JoinCodeKey, new DataObject(DataObject.VisibilityOptions.Public, joinCode) } }
             };
-            if(lobby_name == " ")lobby_name = "lobby" + (lobbyItemParent.childCount+1);
-            var lobby = await Lobbies.Instance.CreateLobbyAsync(lobby_name, maxPlayers, options);
+            var lobby = await Lobbies.Instance.CreateLobbyAsync("lobby" + (lobbyItemParent.childCount+1), maxPlayers, options);
 
             // Send a heartbeat every 15 seconds to keep the room alive
             StartCoroutine(HeartbeatLobbyCoroutine(lobby.Id, 15));
